@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.turbo/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# Playwright MCP
+.playwright-mcp/
+
+# Claude
+.claude/
+
+# Screenshots (dev artifacts)
+*.png
+
+# Env
+.env
+.env.local
