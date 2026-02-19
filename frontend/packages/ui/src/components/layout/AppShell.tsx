@@ -1,8 +1,15 @@
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
+import type { SidebarModule } from './Sidebar'
 
-export function AppShell() {
+interface AppShellProps {
+  modules?: SidebarModule[]
+  currentUser?: { name: string; initials: string; department: string }
+  onLogout?: () => void
+}
+
+export function AppShell({ modules = [], currentUser, onLogout }: AppShellProps) {
   const location = useLocation()
   const navigate = useNavigate()
   const { isOpen: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure()
@@ -14,6 +21,8 @@ export function AppShell() {
         onNavigate={navigate}
         isDrawerOpen={isDrawerOpen}
         onDrawerClose={onDrawerClose}
+        modules={modules}
+        onLogout={onLogout}
       />
       <Box
         as="main"
@@ -26,7 +35,7 @@ export function AppShell() {
         transition="all 0.3s"
         css={{ scrollBehavior: 'smooth' }}
       >
-        <Outlet context={{ onMenuOpen: onDrawerOpen }} />
+        <Outlet context={{ onMenuOpen: onDrawerOpen, currentUser }} />
       </Box>
     </Box>
   )

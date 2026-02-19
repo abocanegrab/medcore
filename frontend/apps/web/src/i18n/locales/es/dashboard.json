@@ -1,0 +1,45 @@
+{
+  "clinicalOverview": "Vista Clinica General",
+  "greeting": {
+    "hello": "Hola, {{name}}.",
+    "helloDoctor": "Hola, Dr. {{name}}."
+  },
+  "subtitle": {
+    "recepcion": "Aqui tienes el resumen de admisiones de hoy.",
+    "triaje": "Aqui tienes el estado de la cola de triaje.",
+    "doctor": "Aqui tienes tu rendimiento y agenda de hoy.",
+    "farmacia": "Aqui tienes el estado de la cola de farmacia."
+  },
+  "departments": {
+    "admissions": "Admisiones",
+    "triageDept": "Depto. Triaje",
+    "cardiology": "Cardiologia",
+    "pharmacy": "Farmacia"
+  },
+  "stats": {
+    "activePatients": "Pacientes Activos",
+    "awaitingTriage": "Esperando Triaje",
+    "completedToday": "Completados Hoy",
+    "queueLength": "Largo de Cola",
+    "avgWaitTime": "Tiempo Prom. Espera",
+    "pendingPrescriptions": "Recetas Pendientes",
+    "dispensedToday": "Dispensados Hoy",
+    "patientsReady": "Pacientes Listos",
+    "totalPatients": "Total Pacientes",
+    "rating": "Calificacion"
+  },
+  "actions": {
+    "goToAdmissions": "Ir a Admisiones",
+    "goToTriageQueue": "Ir a Cola de Triaje",
+    "goToPharmacy": "Ir a Farmacia",
+    "startConsultation": "Iniciar Consulta"
+  },
+  "doctor": {
+    "performanceIndicators": "Indicadores de Rendimiento",
+    "nextUp": "Siguiente",
+    "lastVisit": "Ultima Visita",
+    "condition": "Condicion",
+    "todaysSchedule": "Agenda de Hoy",
+    "liveActivity": "Actividad en Vivo"
+  }
+}

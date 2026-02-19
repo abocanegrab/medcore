@@ -1,0 +1,13 @@
+{
+  "title": "Farmacia",
+  "stats": {
+    "pendingPrescriptions": "Recetas Pendientes",
+    "dispensedToday": "Dispensados Hoy"
+  },
+  "prescriptionsToDispense": "Recetas por Dispensar",
+  "patientsWithActivePrescriptions": "Pacientes con recetas activas de consulta",
+  "noPending": "No hay recetas pendientes",
+  "allDispensed": "Todas las recetas han sido dispensadas",
+  "prescription": "Receta",
+  "dispenseComplete": "Dispensar y Completar"
+}

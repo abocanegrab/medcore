@@ -1,0 +1,19 @@
+{
+  "title": "Admisiones",
+  "stats": {
+    "activePatients": "Pacientes Activos",
+    "waitingForTriage": "Esperando Triaje",
+    "completedToday": "Completados Hoy"
+  },
+  "registerNewPatient": "Registrar Nuevo Paciente",
+  "todaysRegistrations": "Registros de Hoy",
+  "allPatientsProcessed": "Todos los pacientes procesados hoy",
+  "table": {
+    "patient": "Paciente",
+    "id": "ID",
+    "ageGender": "Edad / Genero",
+    "registered": "Registrado",
+    "status": "Estado",
+    "priority": "Prioridad"
+  }
+}

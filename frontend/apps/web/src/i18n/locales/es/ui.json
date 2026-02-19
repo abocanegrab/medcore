@@ -1,0 +1,18 @@
+{
+  "header": {
+    "searchPlaceholder": "Buscar pacientes, registros...",
+    "language": "Idioma",
+    "english": "English",
+    "spanish": "Espanol"
+  },
+  "patientBanner": {
+    "patientId": "ID Paciente",
+    "weight": "Peso",
+    "height": "Talla",
+    "temp": "Temp",
+    "bp": "PA"
+  },
+  "waiting": "EN ESPERA",
+  "ready": "LISTOS",
+  "pending": "PENDIENTES"
+}

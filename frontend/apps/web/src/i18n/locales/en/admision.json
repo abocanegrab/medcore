@@ -1,0 +1,19 @@
+{
+  "title": "Admissions",
+  "stats": {
+    "activePatients": "Active Patients",
+    "waitingForTriage": "Waiting for Triage",
+    "completedToday": "Completed Today"
+  },
+  "registerNewPatient": "Register New Patient",
+  "todaysRegistrations": "Today's Registrations",
+  "allPatientsProcessed": "All patients processed today",
+  "table": {
+    "patient": "Patient",
+    "id": "ID",
+    "ageGender": "Age / Gender",
+    "registered": "Registered",
+    "status": "Status",
+    "priority": "Priority"
+  }
+}

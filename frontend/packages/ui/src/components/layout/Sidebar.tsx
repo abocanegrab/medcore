@@ -14,29 +14,20 @@ import {
   Collapse,
 } from '@chakra-ui/react'
 import {
-  LuLayoutDashboard,
-  LuUsers,
-  LuCalendar,
-  LuFileText,
-  LuClipboardList,
-  LuClipboardPlus,
-  LuPill,
-  LuFlaskConical,
-  LuScanLine,
   LuSettings,
   LuLogOut,
   LuCross,
   LuChevronRight,
-  LuChevronDown,
 } from 'react-icons/lu'
 import type { IconType } from 'react-icons'
+import { useTranslation } from 'react-i18next'
 
-interface SubOption {
+export interface SubOption {
   label: string
   path: string
 }
 
-interface SidebarModule {
+export interface SidebarModule {
   id: string
   icon: IconType
   label: string
@@ -45,112 +36,35 @@ interface SidebarModule {
   subOptions?: SubOption[]
 }
 
-const modules: SidebarModule[] = [
-  {
-    id: 'dashboard',
-    icon: LuLayoutDashboard,
-    label: 'Dashboard',
-    path: '/dashboard',
-    // No sub-options — direct navigation
-  },
-  {
-    id: 'triaje',
-    icon: LuClipboardPlus,
-    label: 'Triaje',
-    path: '/triaje',
-    subOptions: [
-      { label: 'Incoming Patients', path: '/triaje' },
-      { label: 'Waiting Room', path: '/triaje/waiting' },
-    ],
-  },
-  {
-    id: 'patients',
-    icon: LuUsers,
-    label: 'Patients',
-    path: '/patients',
-    subOptions: [
-      { label: 'Patient List', path: '/patients' },
-      { label: 'Register Patient', path: '/patients/register' },
-    ],
-  },
-  {
-    id: 'appointments',
-    icon: LuCalendar,
-    label: 'Appointments',
-    path: '/appointments',
-    badge: '3',
-    subOptions: [
-      { label: 'Calendar', path: '/appointments' },
-      { label: 'Schedule', path: '/appointments/schedule' },
-    ],
-  },
-  {
-    id: 'records',
-    icon: LuFileText,
-    label: 'Medical Records',
-    path: '/records',
-    subOptions: [
-      { label: 'Consultation History', path: '/records' },
-      { label: 'Reports', path: '/records/reports' },
-    ],
-  },
-  {
-    id: 'admision',
-    icon: LuClipboardList,
-    label: 'Admision',
-    path: '/admision',
-    subOptions: [
-      { label: 'Queue', path: '/admision' },
-      { label: 'Register', path: '/admision/register' },
-    ],
-  },
-  {
-    id: 'farmacia',
-    icon: LuPill,
-    label: 'Farmacia',
-    path: '/farmacia',
-    subOptions: [
-      { label: 'Prescriptions', path: '/farmacia' },
-      { label: 'Inventory', path: '/farmacia/inventory' },
-    ],
-  },
-  {
-    id: 'laboratorio',
-    icon: LuFlaskConical,
-    label: 'Laboratorio',
-    path: '/laboratorio',
-    subOptions: [
-      { label: 'Orders', path: '/laboratorio' },
-      { label: 'Results', path: '/laboratorio/results' },
-    ],
-  },
-  {
-    id: 'imagenes',
-    icon: LuScanLine,
-    label: 'Imagenes',
-    path: '/imagenes',
-    subOptions: [
-      { label: 'Requests', path: '/imagenes' },
-      { label: 'Gallery', path: '/imagenes/gallery' },
-    ],
-  },
-]
-
 interface SidebarProps {
   currentPath: string
   onNavigate: (path: string) => void
   isDrawerOpen?: boolean
   onDrawerClose?: () => void
+  modules?: SidebarModule[]
+  onLogout?: () => void
 }
 
 function isModuleActive(mod: SidebarModule, currentPath: string) {
   if (mod.id === 'dashboard' && currentPath === '/dashboard') return true
+  if (mod.id === 'consultas' && currentPath.startsWith('/consultation')) return true
   if (mod.id === 'appointments' && currentPath.startsWith('/consultation')) return true
   return currentPath.startsWith(mod.path) && mod.path !== '/dashboard'
 }
 
 /** Desktop floating sidebar — click-to-expand with module sub-options */
-function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNavigate: (path: string) => void }) {
+function DesktopSidebar({
+  currentPath,
+  onNavigate,
+  modules,
+  onLogout,
+}: {
+  currentPath: string
+  onNavigate: (path: string) => void
+  modules: SidebarModule[]
+  onLogout?: () => void
+}) {
+  const { t } = useTranslation(['nav'])
   const [expandedModuleId, setExpandedModuleId] = useState<string | null>(null)
   const isExpanded = expandedModuleId !== null
 
@@ -175,14 +89,11 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
   const handleIconClick = useCallback(
     (mod: SidebarModule) => {
       if (mod.id === 'dashboard' || !mod.subOptions) {
-        // Dashboard: navigate directly, collapse panel
         setExpandedModuleId(null)
         onNavigate(mod.path)
       } else if (expandedModuleId === mod.id) {
-        // Clicking same module: collapse
         setExpandedModuleId(null)
       } else {
-        // Expand this module's sub-options
         setExpandedModuleId(mod.id)
       }
     },
@@ -197,9 +108,13 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
     [onNavigate],
   )
 
+  const handleLogout = () => {
+    if (onLogout) onLogout()
+    onNavigate('/login')
+  }
+
   return (
     <>
-      {/* Backdrop to close on click outside */}
       {isExpanded && (
         <Box
           position="fixed"
@@ -227,7 +142,7 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
         shadow="glass"
         overflow="hidden"
       >
-        {/* Icon column — always visible */}
+        {/* Icon column */}
         <Flex
           position="absolute"
           insetY={0}
@@ -309,14 +224,14 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
               color="gray.400"
               _hover={{ transform: 'scale(1.1)' }}
               transition="transform 0.2s"
-              onClick={() => onNavigate('/login')}
+              onClick={handleLogout}
             >
               <LuLogOut size={18} />
             </Flex>
           </Box>
         </Flex>
 
-        {/* Expanded panel — clip-path animation with module sub-options */}
+        {/* Expanded panel */}
         <Box
           position="absolute"
           inset={0}
@@ -348,7 +263,6 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
 
           {expandedModule && (
             <Box flex={1}>
-              {/* Module title */}
               <HStack spacing={3} mb={2}>
                 <Flex
                   w={8}
@@ -367,7 +281,7 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
                   fontWeight="bold"
                   color={logoColor}
                 >
-                  {expandedModule.label}
+                  {expandedModule.label.includes(':') ? t(expandedModule.label) : expandedModule.label}
                 </Text>
                 {expandedModule.badge && (
                   <Text
@@ -384,7 +298,6 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
                 )}
               </HStack>
 
-              {/* Sub-options */}
               <Text
                 fontSize="2xs"
                 fontWeight="semibold"
@@ -394,7 +307,7 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
                 mt={6}
                 mb={3}
               >
-                Options
+                {t('nav:options')}
               </Text>
               <VStack spacing={1} align="stretch">
                 {expandedModule.subOptions?.map((sub) => {
@@ -414,7 +327,7 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
                       onClick={() => handleSubOptionClick(sub.path)}
                     >
                       <Box w={1.5} h={1.5} borderRadius="full" bg={subActive ? 'primary.500' : 'gray.300'} flexShrink={0} />
-                      <Text fontSize="sm">{sub.label}</Text>
+                      <Text fontSize="sm">{sub.label.includes(':') ? t(sub.label) : sub.label}</Text>
                     </HStack>
                   )
                 })}
@@ -422,7 +335,7 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
             </Box>
           )}
 
-          {/* System Status at bottom */}
+          {/* System Status */}
           <Box
             mt="auto"
             bg={useColorModeValue('rgba(0,39,82,0.05)', 'rgba(0,39,82,0.15)')}
@@ -432,10 +345,10 @@ function DesktopSidebar({ currentPath, onNavigate }: { currentPath: string; onNa
             borderColor={useColorModeValue('rgba(0,39,82,0.1)', 'rgba(0,39,82,0.2)')}
           >
             <Text fontFamily="heading" fontWeight="bold" color="primary.500" fontSize="sm" mb={1}>
-              System Status
+              {t('nav:systemStatus')}
             </Text>
             <Text fontSize="xs" color="gray.500" mb={3}>
-              Server Optimal
+              {t('nav:serverOptimal')}
             </Text>
             <Box h="6px" w="full" bg={progressBg} borderRadius="full" overflow="hidden">
               <Box h="full" bg="primary.500" w="75%" borderRadius="full" />
@@ -453,12 +366,17 @@ function MobileSidebar({
   onNavigate,
   isOpen,
   onClose,
+  modules,
+  onLogout,
 }: {
   currentPath: string
   onNavigate: (path: string) => void
   isOpen: boolean
   onClose: () => void
+  modules: SidebarModule[]
+  onLogout?: () => void
 }) {
+  const { t } = useTranslation(['nav'])
   const [expandedMobileModule, setExpandedMobileModule] = useState<string | null>(null)
   const bg = useColorModeValue('white', 'gray.900')
   const navLabelColor = useColorModeValue('gray.600', 'gray.300')
@@ -475,6 +393,12 @@ function MobileSidebar({
     } else {
       setExpandedMobileModule(mod.id)
     }
+  }
+
+  const handleLogout = () => {
+    if (onLogout) onLogout()
+    onNavigate('/login')
+    onClose()
   }
 
   return (
@@ -508,7 +432,7 @@ function MobileSidebar({
                   >
                     <HStack spacing={3}>
                       <mod.icon size={20} />
-                      <Text fontSize="sm">{mod.label}</Text>
+                      <Text fontSize="sm">{mod.label.includes(':') ? t(mod.label) : mod.label}</Text>
                     </HStack>
                     {mod.badge && (
                       <Text
@@ -555,7 +479,7 @@ function MobileSidebar({
                               }}
                             >
                               <Box w={1.5} h={1.5} borderRadius="full" bg={subActive ? 'primary.500' : 'gray.300'} flexShrink={0} />
-                              <Text fontSize="sm">{sub.label}</Text>
+                              <Text fontSize="sm">{sub.label.includes(':') ? t(sub.label) : sub.label}</Text>
                             </HStack>
                           )
                         })}
@@ -569,11 +493,11 @@ function MobileSidebar({
           <Box mt={8}>
             <HStack as="button" p={3} borderRadius="xl" color="gray.400" spacing={3}>
               <LuSettings size={20} />
-              <Text fontSize="sm">Settings</Text>
+              <Text fontSize="sm">{t('nav:settings')}</Text>
             </HStack>
-            <HStack as="button" p={3} borderRadius="xl" color="gray.400" spacing={3} onClick={() => { onNavigate('/login'); onClose() }}>
+            <HStack as="button" p={3} borderRadius="xl" color="gray.400" spacing={3} onClick={handleLogout}>
               <LuLogOut size={20} />
-              <Text fontSize="sm">Log out</Text>
+              <Text fontSize="sm">{t('nav:logOut')}</Text>
             </HStack>
           </Box>
         </DrawerBody>
@@ -582,7 +506,7 @@ function MobileSidebar({
   )
 }
 
-export function Sidebar({ currentPath, onNavigate, isDrawerOpen, onDrawerClose }: SidebarProps) {
+export function Sidebar({ currentPath, onNavigate, isDrawerOpen, onDrawerClose, modules = [], onLogout }: SidebarProps) {
   const isMobile = useBreakpointValue({ base: true, lg: false })
 
   if (isMobile) {
@@ -592,9 +516,11 @@ export function Sidebar({ currentPath, onNavigate, isDrawerOpen, onDrawerClose }
         onNavigate={onNavigate}
         isOpen={isDrawerOpen ?? false}
         onClose={onDrawerClose ?? (() => {})}
+        modules={modules}
+        onLogout={onLogout}
       />
     )
   }
 
-  return <DesktopSidebar currentPath={currentPath} onNavigate={onNavigate} />
+  return <DesktopSidebar currentPath={currentPath} onNavigate={onNavigate} modules={modules} onLogout={onLogout} />
 }

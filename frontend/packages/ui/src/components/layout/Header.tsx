@@ -11,8 +11,13 @@ import {
   IconButton,
   Show,
   Hide,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react'
-import { LuSearch, LuBell, LuMenu, LuMoon, LuSun, LuChevronRight, LuChevronDown } from 'react-icons/lu'
+import { LuSearch, LuBell, LuMenu, LuMoon, LuSun, LuChevronRight, LuChevronDown, LuGlobe } from 'react-icons/lu'
+import { useTranslation } from 'react-i18next'
 
 interface BreadcrumbItem {
   label: string
@@ -21,19 +26,27 @@ interface BreadcrumbItem {
 
 interface HeaderProps {
   title: string
+  subtitle?: string
   breadcrumbItems: BreadcrumbItem[]
   badge?: { label: string; color: string }
   showSearch?: boolean
   onMenuClick?: () => void
+  currentUser?: { name: string; initials: string; department: string }
 }
 
-export function Header({ title, breadcrumbItems, badge, showSearch = true, onMenuClick }: HeaderProps) {
+export function Header({ title, breadcrumbItems, badge, showSearch = true, onMenuClick, currentUser }: HeaderProps) {
+  const { t, i18n } = useTranslation(['ui', 'nav'])
   const bg = useColorModeValue('white', 'card.dark')
   const borderColor = useColorModeValue('gray.100', 'gray.800')
   const titleColor = useColorModeValue('primary.500', 'white')
   const crumbColor = useColorModeValue('gray.400', 'gray.500')
   const crumbActiveColor = useColorModeValue('primary.500', 'primary.300')
   const { colorMode, toggleColorMode } = useColorMode()
+  const currentLang = i18n.language?.startsWith('es') ? 'es' : 'en'
+
+  const userName = currentUser?.name ?? 'Dr. Ricardo Mora'
+  const userInitials = currentUser?.initials ?? 'DR'
+  const userDept = currentUser?.department ?? 'Cardiology Dept.'
 
   return (
     <Box
@@ -114,7 +127,6 @@ export function Header({ title, breadcrumbItems, badge, showSearch = true, onMen
 
         {/* Right: search + actions + profile */}
         <HStack spacing={4}>
-          {/* Search */}
           {showSearch && (
             <Show above="md">
               <Box position="relative" w="full" maxW="md" flex={1}>
@@ -123,7 +135,7 @@ export function Header({ title, breadcrumbItems, badge, showSearch = true, onMen
                     <LuSearch size={18} color="var(--chakra-colors-gray-400)" />
                   </InputLeftElement>
                   <Input
-                    placeholder="Search patients, records..."
+                    placeholder={t('ui:header.searchPlaceholder')}
                     pl={12}
                     pr={16}
                     py={2.5}
@@ -165,7 +177,6 @@ export function Header({ title, breadcrumbItems, badge, showSearch = true, onMen
             </Show>
           )}
 
-          {/* Dark mode toggle */}
           <IconButton
             aria-label="Toggle color mode"
             icon={colorMode === 'light' ? <LuMoon size={18} /> : <LuSun size={18} />}
@@ -175,7 +186,33 @@ export function Header({ title, breadcrumbItems, badge, showSearch = true, onMen
             onClick={toggleColorMode}
           />
 
-          {/* Notification bell */}
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label={t('ui:header.language')}
+              icon={<><LuGlobe size={18} /><Text as="span" fontSize="10px" fontWeight="bold" ml={1}>{currentLang.toUpperCase()}</Text></>}
+              variant="ghost"
+              size="sm"
+              borderRadius="full"
+            />
+            <MenuList minW="140px" borderRadius="xl" shadow="lg">
+              <MenuItem
+                borderRadius="lg"
+                fontWeight={currentLang === 'en' ? 'bold' : 'normal'}
+                onClick={() => i18n.changeLanguage('en')}
+              >
+                {t('ui:header.english')}
+              </MenuItem>
+              <MenuItem
+                borderRadius="lg"
+                fontWeight={currentLang === 'es' ? 'bold' : 'normal'}
+                onClick={() => i18n.changeLanguage('es')}
+              >
+                {t('ui:header.spanish')}
+              </MenuItem>
+            </MenuList>
+          </Menu>
+
           <Box position="relative">
             <Flex
               as="button"
@@ -233,7 +270,7 @@ export function Header({ title, breadcrumbItems, badge, showSearch = true, onMen
                 border="1px solid"
                 borderColor={useColorModeValue('gray.100', 'gray.700')}
               >
-                DR
+                {userInitials}
               </Flex>
               <Box
                 position="absolute"
@@ -255,10 +292,10 @@ export function Header({ title, breadcrumbItems, badge, showSearch = true, onMen
                   color={titleColor}
                   lineHeight="tight"
                 >
-                  Dr. Ricardo Mora
+                  {userName}
                 </Text>
                 <Text fontSize="10px" color="gray.500" fontWeight="medium">
-                  Cardiology Dept.
+                  {userDept.includes(':') ? t(userDept) : userDept}
                 </Text>
               </Box>
               <LuChevronDown size={14} color="var(--chakra-colors-gray-400)" />

@@ -3,22 +3,125 @@ import {
   Box,
   Flex,
   Text,
-  Input,
-  Button,
+  SimpleGrid,
   HStack,
-  Checkbox,
-  Link,
   useColorModeValue,
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
-import { LuArrowRight, LuCross, LuFingerprint, LuQrCode, LuShield } from 'react-icons/lu'
+import { LuCross } from 'react-icons/lu'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
+import { mockUsers } from '../data/mockUsers'
+import { useAuth } from '../contexts/AuthContext'
+import type { MockUser } from '../data/mockUsers'
 
 const MotionBox = motion.create(Box)
 const MotionFlex = motion.create(Flex)
 
+const roleColors: Record<string, string> = {
+  recepcion: '#C5A065',
+  triaje: '#2D9CDB',
+  doctor: '#002752',
+  farmacia: '#27AE60',
+}
+
+function UserCard({ user, index, onClick }: { user: MockUser; index: number; onClick: () => void }) {
+  const { t } = useTranslation(['login', 'dashboard'])
+  const cardBg = useColorModeValue(
+    'linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 100%)',
+    'linear-gradient(145deg, rgba(22,30,39,0.9) 0%, rgba(22,30,39,0.5) 100%)',
+  )
+  const borderColor = useColorModeValue('rgba(255,255,255,0.8)', 'rgba(255,255,255,0.05)')
+  const nameColor = useColorModeValue('primary.500', 'white')
+  const deptColor = useColorModeValue('gray.500', 'gray.400')
+  const color = roleColors[user.role] ?? '#002752'
+
+  return (
+    <MotionBox
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.3 + index * 0.1, ease: [0.16, 1, 0.3, 1] } as any}
+    >
+      <Box
+        as="button"
+        w="full"
+        bg={cardBg}
+        backdropFilter="blur(20px)"
+        borderRadius="2xl"
+        p={6}
+        border="1px solid"
+        borderColor={borderColor}
+        shadow="0 4px 20px -4px rgba(0,39,82,0.08)"
+        cursor="pointer"
+        _hover={{
+          transform: 'translateY(-4px)',
+          shadow: `0 12px 30px -8px ${color}40`,
+          borderColor: `${color}60`,
+        }}
+        transition="all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+        textAlign="center"
+        display="flex"
+        flexDir="column"
+        alignItems="center"
+        gap={3}
+        onClick={onClick}
+      >
+        {/* Avatar */}
+        <Flex
+          w={16}
+          h={16}
+          borderRadius="2xl"
+          bg={color}
+          color="white"
+          align="center"
+          justify="center"
+          fontSize="xl"
+          fontWeight="bold"
+          fontFamily="heading"
+          shadow={`0 4px 14px ${color}50`}
+        >
+          {user.initials}
+        </Flex>
+
+        {/* Name */}
+        <Text
+          fontSize="md"
+          fontFamily="heading"
+          fontWeight="bold"
+          color={nameColor}
+          lineHeight="tight"
+        >
+          {user.name}
+        </Text>
+
+        {/* Role badge */}
+        <Text
+          fontSize="xs"
+          fontWeight="semibold"
+          color="white"
+          bg={color}
+          px={3}
+          py={1}
+          borderRadius="full"
+          textTransform="uppercase"
+          letterSpacing="wider"
+        >
+          {t(user.roleLabel)}
+        </Text>
+
+        {/* Department */}
+        <Text fontSize="xs" color={deptColor} fontWeight="medium">
+          {t(user.department)}
+        </Text>
+      </Box>
+    </MotionBox>
+  )
+}
+
 export default function LoginPage() {
+  const { t } = useTranslation(['login'])
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [clock, setClock] = useState('')
   const [date, setDate] = useState('')
 
@@ -33,8 +136,8 @@ export default function LoginPage() {
     return () => clearInterval(interval)
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSelectUser = (user: MockUser) => {
+    login(user.id)
     navigate('/dashboard')
   }
 
@@ -84,7 +187,7 @@ export default function LoginPage() {
       >
         {/* Left side: Clock & date */}
         <MotionBox
-          w={{ base: 'full', lg: '50%' }}
+          w={{ base: 'full', lg: '40%' }}
           p={{ base: 4, lg: 12 }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -116,7 +219,7 @@ export default function LoginPage() {
               />
             </Box>
             <Text fontSize="xs" fontWeight="medium" textTransform="uppercase" letterSpacing="wide" color="rgba(0,39,82,0.7)">
-              System Operational
+              {t('login:systemOperational')}
             </Text>
           </HStack>
 
@@ -144,14 +247,14 @@ export default function LoginPage() {
               {date}
             </Text>
             <Text fontSize="sm" color="rgba(0,39,82,0.5)" mt={1} fontFamily="mono" letterSpacing="wider">
-              MedCore SECURE GATEWAY v4.2
+              {t('login:gatewayVersion')}
             </Text>
           </Box>
         </MotionBox>
 
-        {/* Right side: Login card */}
+        {/* Right side: User picker */}
         <MotionBox
-          w={{ base: 'full', lg: '480px' }}
+          w={{ base: 'full', lg: '55%' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] } as any}
@@ -160,14 +263,12 @@ export default function LoginPage() {
             bg="linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%)"
             backdropFilter="blur(20px)"
             borderRadius="3rem"
-            p={{ base: 8, lg: 12 }}
+            p={{ base: 6, lg: 10 }}
             shadow="0 20px 40px -12px rgba(0,39,82,0.1), 0 0 0 1px rgba(255,255,255,0.8), inset 0 0 20px rgba(255,255,255,0.5)"
             position="relative"
             overflow="hidden"
             border="1px solid"
             borderColor="rgba(255,255,255,0.6)"
-            _hover={{ shadow: '0 0 25px rgba(0,39,82,0.15)' }}
-            transition="box-shadow 0.7s"
           >
             {/* Decorative blurs */}
             <Box
@@ -196,9 +297,9 @@ export default function LoginPage() {
             />
 
             {/* Card content */}
-            <Box position="relative" zIndex={10} display="flex" flexDir="column" gap={8}>
+            <Box position="relative" zIndex={10}>
               {/* Brand */}
-              <HStack spacing={3} mb={4}>
+              <HStack spacing={3} mb={8}>
                 <Flex
                   w={10}
                   h={10}
@@ -216,153 +317,43 @@ export default function LoginPage() {
                     MedCore
                   </Text>
                   <Text fontSize="10px" color="rgba(0,39,82,0.6)" textTransform="uppercase" letterSpacing="widest">
-                    Portal Access
+                    {t('login:portalAccess')}
                   </Text>
                 </Box>
               </HStack>
 
-              {/* Form */}
-              <form onSubmit={handleSubmit}>
-                <Box display="flex" flexDir="column" gap={6}>
-                  {/* Inputs */}
-                  <Box display="flex" flexDir="column" gap={8}>
-                    {/* Identity ID */}
-                    <Box position="relative">
-                      <Input
-                        variant="flushed"
-                        placeholder="Identity ID"
-                        fontSize="lg"
-                        color="primary.500"
-                        borderColor="gray.300"
-                        _focus={{ borderColor: 'primary.500' }}
-                        py={2.5}
-                      />
-                      <Box position="absolute" right={0} top="10px" color="gray.400">
-                        <LuShield size={20} />
-                      </Box>
-                    </Box>
+              {/* Title */}
+              <Text
+                fontSize="xl"
+                fontFamily="heading"
+                fontWeight="bold"
+                color="primary.500"
+                mb={2}
+              >
+                {t('login:selectProfile')}
+              </Text>
+              <Text fontSize="sm" color="gray.500" mb={6}>
+                {t('login:chooseRole')}
+              </Text>
 
-                    {/* Passkey */}
-                    <Box position="relative">
-                      <Input
-                        variant="flushed"
-                        placeholder="Passkey"
-                        type="password"
-                        fontSize="lg"
-                        color="primary.500"
-                        borderColor="gray.300"
-                        _focus={{ borderColor: 'primary.500' }}
-                        py={2.5}
-                      />
-                      <Box position="absolute" right={0} top="10px" color="gray.400">
-                        <LuFingerprint size={20} />
-                      </Box>
-                    </Box>
-                  </Box>
-
-                  {/* Options row */}
-                  <Flex justify="space-between" align="center" fontSize="sm" mt={2}>
-                    <Checkbox size="sm" colorScheme="blue">
-                      <Text color="gray.500" fontSize="sm">Keep signed in</Text>
-                    </Checkbox>
-                    <Link color="gray.500" fontSize="sm" _hover={{ color: 'primary.500' }}>
-                      Recovery options
-                    </Link>
-                  </Flex>
-
-                  {/* Submit button */}
-                  <Button
-                    type="submit"
-                    mt={4}
-                    w="full"
-                    py={4}
-                    h="auto"
-                    bg="primary.500"
-                    color="white"
-                    borderRadius="full"
-                    fontFamily="heading"
-                    fontWeight="semibold"
-                    fontSize="lg"
-                    letterSpacing="wide"
-                    shadow="lg"
-                    _hover={{ bg: 'primary.400', transform: 'scale(1.02)' }}
-                    transition="all 0.3s"
-                    rightIcon={<LuArrowRight size={18} />}
-                  >
-                    Authenticate Access
-                  </Button>
-                </Box>
-              </form>
-
-              {/* Social auth divider */}
-              <Box pt={6} borderTop="1px solid" borderColor="rgba(0,0,0,0.06)">
-                <HStack justify="center" spacing={6}>
-                  {/* Google */}
-                  <Flex
-                    as="button"
-                    w={10}
-                    h={10}
-                    borderRadius="full"
-                    bg="white"
-                    align="center"
-                    justify="center"
-                    border="1px solid"
-                    borderColor="gray.200"
-                    shadow="sm"
-                    color="primary.500"
-                    _hover={{ shadow: 'md', bg: 'gray.50' }}
-                    transition="all 0.2s"
-                    onClick={() => navigate('/dashboard')}
-                  >
-                    <Text fontWeight="bold" fontSize="lg">G</Text>
-                  </Flex>
-                  {/* Fingerprint */}
-                  <Flex
-                    as="button"
-                    w={10}
-                    h={10}
-                    borderRadius="full"
-                    bg="white"
-                    align="center"
-                    justify="center"
-                    border="1px solid"
-                    borderColor="gray.200"
-                    shadow="sm"
-                    color="primary.500"
-                    _hover={{ shadow: 'md', bg: 'gray.50' }}
-                    transition="all 0.2s"
-                    onClick={() => navigate('/dashboard')}
-                  >
-                    <LuFingerprint size={20} />
-                  </Flex>
-                  {/* QR */}
-                  <Flex
-                    as="button"
-                    w={10}
-                    h={10}
-                    borderRadius="full"
-                    bg="white"
-                    align="center"
-                    justify="center"
-                    border="1px solid"
-                    borderColor="gray.200"
-                    shadow="sm"
-                    color="primary.500"
-                    _hover={{ shadow: 'md', bg: 'gray.50' }}
-                    transition="all 0.2s"
-                    onClick={() => navigate('/dashboard')}
-                  >
-                    <LuQrCode size={20} />
-                  </Flex>
-                </HStack>
-              </Box>
+              {/* User grid */}
+              <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={4}>
+                {mockUsers.map((user, i) => (
+                  <UserCard
+                    key={user.id}
+                    user={user}
+                    index={i}
+                    onClick={() => handleSelectUser(user)}
+                  />
+                ))}
+              </SimpleGrid>
             </Box>
           </Box>
 
           {/* Bottom disclaimer */}
           <Text textAlign="center" fontSize="xs" color="rgba(0,39,82,0.4)" mt={8}>
-            Restricted Access. Authorized Personnel Only.<br />
-            Protected by MedCore Cyber-Infrastructure.
+            {t('login:restrictedAccess')}<br />
+            {t('login:protectedBy')}
           </Text>
         </MotionBox>
       </Flex>

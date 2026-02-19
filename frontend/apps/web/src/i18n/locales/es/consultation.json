@@ -1,0 +1,33 @@
+{
+  "queue": {
+    "title": "Cola de Consultas",
+    "patientsReady": "Pacientes Listos",
+    "triagedAwaiting": "Triados y Esperando Consulta",
+    "triagedPatients": "Pacientes Triados",
+    "patientsWithCompletedTriage": "Pacientes con triaje completado listos para consulta",
+    "noPatientsWaiting": "No hay pacientes en espera",
+    "allSeen": "Todos los pacientes triados han sido atendidos",
+    "beginConsultation": "Iniciar Consulta",
+    "today": "Hoy"
+  },
+  "form": {
+    "title": "Consulta de Paciente",
+    "dataEntry": "INGRESO DE DATOS",
+    "triageObservations": "Observaciones de Triaje",
+    "anamnesis": "Anamnesis",
+    "anamnesisSubtitle": "Evaluacion inicial e historial del paciente",
+    "anamnesisPlaceholder": "Describa el motivo de consulta y los sintomas...",
+    "workPlan": "Plan de Trabajo",
+    "workPlanSubtitle": "Siguientes pasos y procedimientos",
+    "workPlanPlaceholder": "Ingrese la hoja de ruta medica propuesta para este paciente...",
+    "backgroundHistory": "Antecedentes e Historial",
+    "medicalHistory": "Historial Medico",
+    "surgicalHistory": "Historial Quirurgico",
+    "savedRecords": "Registros Guardados",
+    "allergies": "Alergias",
+    "diagnosis": "Diagnostico",
+    "treatment": "Tratamiento",
+    "labOrders": "Ordenes de Laboratorio",
+    "finishConsultation": "Finalizar Consulta"
+  }
+}

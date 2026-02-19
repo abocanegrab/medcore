@@ -1,0 +1,15 @@
+{
+  "portalAccess": "Portal Access",
+  "selectProfile": "Select Profile",
+  "chooseRole": "Choose your role to access the clinical workflow",
+  "gatewayVersion": "MedCore SECURE GATEWAY v4.2",
+  "systemOperational": "System Operational",
+  "restrictedAccess": "Restricted Access. Authorized Personnel Only.",
+  "protectedBy": "Protected by MedCore Cyber-Infrastructure.",
+  "roleLabels": {
+    "recepcion": "Reception",
+    "triaje": "Triage Nurse",
+    "doctor": "Physician",
+    "farmacia": "Pharmacist"
+  }
+}

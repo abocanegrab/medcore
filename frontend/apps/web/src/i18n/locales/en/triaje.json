@@ -1,0 +1,24 @@
+{
+  "queue": {
+    "title": "Triage Queue",
+    "patientsWaiting": "Patients Waiting",
+    "avgWaitTime": "Avg. Wait Time",
+    "patientsAwaitingTriage": "Patients Awaiting Triage",
+    "clickStartTriage": "Click \"Start Triage\" to begin assessment",
+    "noPatientsWaiting": "No patients waiting",
+    "allTriaged": "All patients have been triaged",
+    "startTriage": "Start Triage"
+  },
+  "form": {
+    "title": "Patient Triage",
+    "intake": "INTAKE",
+    "weight": "Weight",
+    "height": "Height",
+    "temp": "Temp",
+    "bp": "BP",
+    "initialObservations": "Initial Observations",
+    "recordChiefComplaint": "Record chief complaint and visual assessment",
+    "patientComplainsOf": "Patient complains of...",
+    "completeTriage": "Complete Triage & Send to Doctor"
+  }
+}

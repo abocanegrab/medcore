@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { BrowserRouter } from 'react-router-dom'
 import { theme } from '@medcore/ui/theme'
+import './i18n/i18n'
 import App from './App'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

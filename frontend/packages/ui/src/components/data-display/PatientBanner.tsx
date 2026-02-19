@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { LuWeight, LuRuler, LuThermometer, LuHeartPulse, LuPencil } from 'react-icons/lu'
 import type { IconType } from 'react-icons'
+import { useTranslation } from 'react-i18next'
 
 interface VitalField {
   icon: IconType
@@ -74,6 +75,7 @@ function VitalInput({ icon: Icon, label, value, unit }: VitalField) {
 }
 
 export function PatientBanner({ name, age, gender, patientId, vitals }: PatientBannerProps) {
+  const { t } = useTranslation(['ui', 'common'])
   const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('')
 
   return (
@@ -141,11 +143,11 @@ export function PatientBanner({ name, age, gender, patientId, vitals }: PatientB
               border="1px solid"
               borderColor="whiteAlpha.100"
             >
-              {age} Years &bull; {gender}
+              {age} {t('common:years')} &bull; {gender}
             </Text>
           </HStack>
           <Text color="gray.300" fontSize="sm">
-            Patient ID: {patientId}
+            {t('ui:patientBanner.patientId')}: {patientId}
           </Text>
         </Box>
       </HStack>
@@ -158,10 +160,10 @@ export function PatientBanner({ name, age, gender, patientId, vitals }: PatientB
         position="relative"
         zIndex={10}
       >
-        <VitalInput icon={LuWeight} label="Weight" value={vitals.weight} unit="kg" />
-        <VitalInput icon={LuRuler} label="Height" value={vitals.height} unit="cm" />
-        <VitalInput icon={LuThermometer} label="Temp" value={vitals.temperature} unit="°C" />
-        <VitalInput icon={LuHeartPulse} label="BP" value={vitals.bloodPressure} unit="mmHg" />
+        <VitalInput icon={LuWeight} label={t('ui:patientBanner.weight')} value={vitals.weight} unit="kg" />
+        <VitalInput icon={LuRuler} label={t('ui:patientBanner.height')} value={vitals.height} unit="cm" />
+        <VitalInput icon={LuThermometer} label={t('ui:patientBanner.temp')} value={vitals.temperature} unit="°C" />
+        <VitalInput icon={LuHeartPulse} label={t('ui:patientBanner.bp')} value={vitals.bloodPressure} unit="mmHg" />
       </SimpleGrid>
     </Box>
   )

@@ -1,0 +1,33 @@
+{
+  "queue": {
+    "title": "Consultation Queue",
+    "patientsReady": "Patients Ready",
+    "triagedAwaiting": "Triaged & Awaiting Consultation",
+    "triagedPatients": "Triaged Patients",
+    "patientsWithCompletedTriage": "Patients with completed triage ready for consultation",
+    "noPatientsWaiting": "No patients waiting",
+    "allSeen": "All triaged patients have been seen",
+    "beginConsultation": "Begin Consultation",
+    "today": "Today"
+  },
+  "form": {
+    "title": "Patient Consultation",
+    "dataEntry": "DATA ENTRY",
+    "triageObservations": "Triage Observations",
+    "anamnesis": "Anamnesis",
+    "anamnesisSubtitle": "Initial assessment and patient history",
+    "anamnesisPlaceholder": "Describe the reason for consultation and symptoms...",
+    "workPlan": "Work Plan",
+    "workPlanSubtitle": "Next steps and procedures",
+    "workPlanPlaceholder": "Enter the proposed medical roadmap for this patient...",
+    "backgroundHistory": "Background & History",
+    "medicalHistory": "Medical History",
+    "surgicalHistory": "Surgical History",
+    "savedRecords": "Saved Records",
+    "allergies": "Allergies",
+    "diagnosis": "Diagnosis",
+    "treatment": "Treatment",
+    "labOrders": "Lab Orders",
+    "finishConsultation": "Finish Consultation"
+  }
+}

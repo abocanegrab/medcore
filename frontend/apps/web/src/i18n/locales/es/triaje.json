@@ -1,0 +1,24 @@
+{
+  "queue": {
+    "title": "Cola de Triaje",
+    "patientsWaiting": "Pacientes en Espera",
+    "avgWaitTime": "Tiempo Prom. Espera",
+    "patientsAwaitingTriage": "Pacientes Esperando Triaje",
+    "clickStartTriage": "Haga clic en \"Iniciar Triaje\" para comenzar la evaluacion",
+    "noPatientsWaiting": "No hay pacientes en espera",
+    "allTriaged": "Todos los pacientes han sido evaluados",
+    "startTriage": "Iniciar Triaje"
+  },
+  "form": {
+    "title": "Triaje de Paciente",
+    "intake": "INGRESO",
+    "weight": "Peso",
+    "height": "Talla",
+    "temp": "Temp",
+    "bp": "PA",
+    "initialObservations": "Observaciones Iniciales",
+    "recordChiefComplaint": "Registrar motivo de consulta y evaluacion visual",
+    "patientComplainsOf": "El paciente refiere...",
+    "completeTriage": "Completar Triaje y Enviar al Doctor"
+  }
+}

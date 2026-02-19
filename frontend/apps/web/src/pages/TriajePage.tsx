@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Box,
   SimpleGrid,
@@ -8,7 +9,7 @@ import {
   Textarea,
   useColorModeValue,
 } from '@chakra-ui/react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext, useParams, useNavigate } from 'react-router-dom'
 import {
   LuWeight,
   LuRuler,
@@ -17,10 +18,10 @@ import {
   LuClipboardList,
   LuPhone,
   LuIdCard,
-  LuSend,
 } from 'react-icons/lu'
 import { Header, ActionBar } from '@medcore/ui'
-import { triagePatient } from '../data/mockData'
+import { useTranslation } from 'react-i18next'
+import { usePatientQueue } from '../contexts/PatientQueueContext'
 import type { IconType } from 'react-icons'
 
 interface VitalCardProps {
@@ -30,9 +31,11 @@ interface VitalCardProps {
   unit: string
   type?: string
   step?: string
+  value?: string
+  onChange?: (val: string) => void
 }
 
-function VitalCard({ icon: Icon, label, placeholder, unit, type = 'number', step }: VitalCardProps) {
+function VitalCard({ icon: Icon, label, placeholder, unit, type = 'number', step, value, onChange }: VitalCardProps) {
   const bg = useColorModeValue('white', 'card.dark')
   const border = useColorModeValue('gray.100', 'gray.800')
   const iconBg = useColorModeValue('gray.50', 'gray.800')
@@ -66,12 +69,9 @@ function VitalCard({ icon: Icon, label, placeholder, unit, type = 'number', step
         shadow: 'lg',
       }}
     >
-      {/* Icon top-left */}
       <Box position="absolute" top={4} left={4} p={2} bg={iconBg} borderRadius="xl">
         <Icon size={20} color={`var(--chakra-colors-${iconColor.replace('.', '-')})`} />
       </Box>
-
-      {/* Label */}
       <Text
         fontSize="sm"
         fontWeight="semibold"
@@ -82,8 +82,6 @@ function VitalCard({ icon: Icon, label, placeholder, unit, type = 'number', step
       >
         {label}
       </Text>
-
-      {/* Input */}
       <Input
         variant="unstyled"
         placeholder={placeholder}
@@ -96,9 +94,9 @@ function VitalCard({ icon: Icon, label, placeholder, unit, type = 'number', step
         color={inputColor}
         _placeholder={{ color: useColorModeValue('gray.200', 'gray.600') }}
         w="full"
+        value={value}
+        onChange={(e) => onChange?.(e.target.value)}
       />
-
-      {/* Unit badge */}
       <Text
         fontSize="lg"
         fontWeight="medium"
@@ -115,8 +113,19 @@ function VitalCard({ icon: Icon, label, placeholder, unit, type = 'number', step
 }
 
 export default function TriajePage() {
-  const { onMenuOpen } = useOutletContext<{ onMenuOpen: () => void }>()
-  const p = triagePatient
+  const { t } = useTranslation(['triaje', 'common'])
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const { onMenuOpen, currentUser } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any }>()
+  const { getPatientById, updatePatientData } = usePatientQueue()
+
+  const patient = id ? getPatientById(id) : undefined
+
+  const [weight, setWeight] = useState(patient?.vitals?.weight ?? '')
+  const [height, setHeight] = useState(patient?.vitals?.height ?? '')
+  const [temperature, setTemperature] = useState(patient?.vitals?.temperature ?? '')
+  const [bloodPressure, setBloodPressure] = useState(patient?.vitals?.bloodPressure ?? '')
+  const [observations, setObservations] = useState(patient?.triageObservations ?? '')
 
   const cardBg = useColorModeValue('white', 'card.dark')
   const cardBorder = useColorModeValue('gray.100', 'gray.800')
@@ -127,18 +136,36 @@ export default function TriajePage() {
   const inputBorder = useColorModeValue('gray.200', 'gray.700')
   const inputColor = useColorModeValue('gray.600', 'gray.300')
 
+  if (!patient) {
+    return (
+      <Box p={12} textAlign="center">
+        <Text fontSize="xl" color="gray.400">{t('common:notFound')}</Text>
+      </Box>
+    )
+  }
+
+  const handleCompleteTriage = () => {
+    updatePatientData(patient.id, {
+      status: 'triaged',
+      vitals: { weight, height, temperature, bloodPressure },
+      triageObservations: observations,
+    })
+    navigate('/triaje')
+  }
+
   return (
     <Box pb={24}>
       <Header
-        title="Patient Triage"
+        title={t('triaje:form.title')}
         breadcrumbItems={[
           { label: 'MedCore' },
           { label: 'Triage' },
-          { label: p.name, isActive: true },
+          { label: patient.name, isActive: true },
         ]}
         badge={{ label: 'INTAKE', color: 'amber' }}
         showSearch={false}
         onMenuClick={onMenuOpen}
+        currentUser={currentUser}
       />
 
       <Box
@@ -168,7 +195,6 @@ export default function TriajePage() {
           position="relative"
           overflow="hidden"
         >
-          {/* Decorative blur */}
           <Box
             position="absolute"
             top={0}
@@ -184,9 +210,7 @@ export default function TriajePage() {
             pointerEvents="none"
           />
 
-          {/* Patient info */}
           <HStack spacing={6} position="relative" zIndex={10}>
-            {/* Avatar */}
             <Flex
               w={24}
               h={24}
@@ -201,12 +225,12 @@ export default function TriajePage() {
               fontWeight="bold"
               flexShrink={0}
             >
-              {p.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+              {patient.initials}
             </Flex>
             <Box>
               <HStack spacing={3} mb={1} flexWrap="wrap">
                 <Text fontSize="3xl" fontFamily="heading" fontWeight="bold">
-                  {p.name}
+                  {patient.name}
                 </Text>
                 <Text
                   bg="whiteAlpha.100"
@@ -218,17 +242,17 @@ export default function TriajePage() {
                   border="1px solid"
                   borderColor="whiteAlpha.100"
                 >
-                  {p.age} Years &bull; {p.gender}
+                  {patient.age} {t('common:years')} &bull; {patient.gender}
                 </Text>
               </HStack>
               <HStack spacing={4} color="gray.300" fontSize="sm" mt={2}>
                 <HStack spacing={1}>
                   <LuIdCard size={16} />
-                  <Text>ID: {p.patientId}</Text>
+                  <Text>ID: {patient.patientId}</Text>
                 </HStack>
                 <HStack spacing={1}>
                   <LuPhone size={16} />
-                  <Text>{p.phone}</Text>
+                  <Text>{patient.phone}</Text>
                 </HStack>
               </HStack>
             </Box>
@@ -237,10 +261,10 @@ export default function TriajePage() {
 
         {/* Vital Input Cards */}
         <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} spacing={6}>
-          <VitalCard icon={LuWeight} label="Weight" placeholder="00" unit="kg" />
-          <VitalCard icon={LuRuler} label="Height" placeholder="000" unit="cm" />
-          <VitalCard icon={LuThermometer} label="Temp" placeholder="00.0" unit="°C" step="0.1" />
-          <VitalCard icon={LuHeartPulse} label="BP" placeholder="120/80" unit="mmHg" type="text" />
+          <VitalCard icon={LuWeight} label={t('triaje:form.weight')} placeholder="00" unit="kg" value={weight} onChange={setWeight} />
+          <VitalCard icon={LuRuler} label={t('triaje:form.height')} placeholder="000" unit="cm" value={height} onChange={setHeight} />
+          <VitalCard icon={LuThermometer} label={t('triaje:form.temp')} placeholder="00.0" unit="°C" step="0.1" value={temperature} onChange={setTemperature} />
+          <VitalCard icon={LuHeartPulse} label={t('triaje:form.bp')} placeholder="120/80" unit="mmHg" type="text" value={bloodPressure} onChange={setBloodPressure} />
         </SimpleGrid>
 
         {/* Initial Observations */}
@@ -268,15 +292,15 @@ export default function TriajePage() {
             </Flex>
             <Box>
               <Text fontSize="lg" fontWeight="bold" color={titleColor}>
-                Initial Observations
+                {t('triaje:form.initialObservations')}
               </Text>
               <Text fontSize="xs" color={subtitleColor}>
-                Record chief complaint and visual assessment
+                {t('triaje:form.recordChiefComplaint')}
               </Text>
             </Box>
           </Flex>
           <Textarea
-            placeholder="Patient complains of..."
+            placeholder={t('triaje:form.patientComplainsOf')}
             rows={8}
             resize="none"
             w="full"
@@ -293,6 +317,8 @@ export default function TriajePage() {
               borderColor: 'rgba(0,39,82,0.3)',
             }}
             transition="all 0.2s"
+            value={observations}
+            onChange={(e) => setObservations(e.target.value)}
           />
         </Box>
       </Box>
@@ -301,8 +327,8 @@ export default function TriajePage() {
       <ActionBar
         leftActions={[]}
         rightActions={[
-          { label: 'Save Draft', variant: 'outline' },
-          { label: 'Complete Triage & Send to Doctor', variant: 'primary' },
+          { label: t('common:actions.saveDraft'), variant: 'outline' },
+          { label: t('triaje:form.completeTriage'), variant: 'primary', onClick: handleCompleteTriage },
         ]}
       />
     </Box>

@@ -1,0 +1,45 @@
+{
+  "clinicalOverview": "Clinical Overview",
+  "greeting": {
+    "hello": "Hello, {{name}}.",
+    "helloDoctor": "Hello, Dr. {{name}}."
+  },
+  "subtitle": {
+    "recepcion": "Here's today's admissions overview.",
+    "triaje": "Here's your triage queue status.",
+    "doctor": "Here's your performance overview and schedule for today.",
+    "farmacia": "Here's your pharmacy queue status."
+  },
+  "departments": {
+    "admissions": "Admissions",
+    "triageDept": "Triage Dept.",
+    "cardiology": "Cardiology",
+    "pharmacy": "Pharmacy"
+  },
+  "stats": {
+    "activePatients": "Active Patients",
+    "awaitingTriage": "Awaiting Triage",
+    "completedToday": "Completed Today",
+    "queueLength": "Queue Length",
+    "avgWaitTime": "Avg. Wait Time",
+    "pendingPrescriptions": "Pending Prescriptions",
+    "dispensedToday": "Dispensed Today",
+    "patientsReady": "Patients Ready",
+    "totalPatients": "Total Patients",
+    "rating": "Rating"
+  },
+  "actions": {
+    "goToAdmissions": "Go to Admissions",
+    "goToTriageQueue": "Go to Triage Queue",
+    "goToPharmacy": "Go to Pharmacy",
+    "startConsultation": "Start Consultation"
+  },
+  "doctor": {
+    "performanceIndicators": "Performance Indicators",
+    "nextUp": "Next Up",
+    "lastVisit": "Last Visit",
+    "condition": "Condition",
+    "todaysSchedule": "Today's Schedule",
+    "liveActivity": "Live Activity"
+  }
+}

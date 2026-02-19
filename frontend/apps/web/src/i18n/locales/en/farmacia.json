@@ -1,0 +1,13 @@
+{
+  "title": "Pharmacy",
+  "stats": {
+    "pendingPrescriptions": "Pending Prescriptions",
+    "dispensedToday": "Dispensed Today"
+  },
+  "prescriptionsToDispense": "Prescriptions to Dispense",
+  "patientsWithActivePrescriptions": "Patients with active prescriptions from consultation",
+  "noPending": "No pending prescriptions",
+  "allDispensed": "All prescriptions have been dispensed",
+  "prescription": "Prescription",
+  "dispenseComplete": "Dispense & Complete"
+}

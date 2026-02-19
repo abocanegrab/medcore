@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Box,
   Grid,
@@ -11,14 +12,12 @@ import {
   useColorModeValue,
   IconButton,
 } from '@chakra-ui/react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext, useParams, useNavigate } from 'react-router-dom'
 import {
   LuFilePenLine,
   LuClipboardList,
   LuHistory,
   LuPlus,
-  LuX,
-  LuPencil,
   LuActivity,
   LuPill,
   LuFlaskConical,
@@ -30,11 +29,21 @@ import {
   HistoryChip,
   ActionBar,
 } from '@medcore/ui'
-import { patientConsultation } from '../data/mockData'
+import { useTranslation } from 'react-i18next'
+import { usePatientQueue } from '../contexts/PatientQueueContext'
+import type { NextStep } from '../data/mockPatients'
 
 export default function ConsultationPage() {
-  const { onMenuOpen } = useOutletContext<{ onMenuOpen: () => void }>()
-  const p = patientConsultation
+  const { t } = useTranslation(['consultation', 'common'])
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const { onMenuOpen, currentUser } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any }>()
+  const { getPatientById, updatePatientData } = usePatientQueue()
+
+  const patient = id ? getPatientById(id) : undefined
+
+  const [anamnesis, setAnamnesis] = useState(patient?.anamnesis ?? '')
+  const [workPlan, setWorkPlan] = useState(patient?.workPlan ?? '')
 
   const cardBg = useColorModeValue('white', 'card.dark')
   const cardBorder = useColorModeValue('gray.100', 'gray.800')
@@ -42,24 +51,42 @@ export default function ConsultationPage() {
   const titleColor = useColorModeValue('primary.500', 'white')
   const chipSubtext = useColorModeValue('gray.400', 'gray.500')
   const addBtnBg = useColorModeValue('rgba(0,39,82,0.1)', 'rgba(0,39,82,0.3)')
-  const newEntryBg = useColorModeValue('rgba(0,39,82,0.05)', 'rgba(0,39,82,0.15)')
-  const newEntryBorder = useColorModeValue('rgba(0,39,82,0.2)', 'rgba(0,39,82,0.4)')
   const allergyBg = useColorModeValue('red.50', 'rgba(127,29,29,0.2)')
   const allergyBorder = useColorModeValue('red.100', 'rgba(127,29,29,0.3)')
   const allergyColor = useColorModeValue('red.600', 'red.400')
 
+  if (!patient) {
+    return (
+      <Box p={12} textAlign="center">
+        <Text fontSize="xl" color="gray.400">{t('common:notFound')}</Text>
+      </Box>
+    )
+  }
+
+  const handleFinishConsultation = (nextStep: NextStep) => {
+    updatePatientData(patient.id, {
+      status: 'post_consultation',
+      anamnesis,
+      workPlan,
+      nextStep,
+      prescription: nextStep === 'farmacia' ? 'Prescribed medication (auto-generated for demo)' : undefined,
+    })
+    navigate('/consultation')
+  }
+
   return (
     <Box pb={24}>
       <Header
-        title="Patient Consultation"
+        title={t('consultation:form.title')}
         breadcrumbItems={[
           { label: 'MedCore' },
-          { label: 'Appointments' },
-          { label: p.name, isActive: true },
+          { label: 'Consultas' },
+          { label: patient.name, isActive: true },
         ]}
-        badge={{ label: 'DATA ENTRY', color: 'red' }}
+        badge={{ label: t('consultation:form.dataEntry'), color: 'red' }}
         showSearch={false}
         onMenuClick={onMenuOpen}
+        currentUser={currentUser}
       />
 
       <Box
@@ -75,30 +102,48 @@ export default function ConsultationPage() {
       >
         {/* Patient Banner */}
         <PatientBanner
-          name={p.name}
-          age={p.age}
-          gender={p.gender}
-          patientId={p.patientId}
-          vitals={p.vitals}
+          name={patient.name}
+          age={patient.age}
+          gender={patient.gender}
+          patientId={patient.patientId}
+          vitals={patient.vitals ?? { weight: '--', height: '--', temperature: '--', bloodPressure: '--' }}
         />
+
+        {/* Triage observations (read-only) */}
+        {patient.triageObservations && (
+          <Box
+            bg={useColorModeValue('blue.50', 'rgba(0,39,82,0.15)')}
+            borderRadius="2xl"
+            p={4}
+            border="1px solid"
+            borderColor={useColorModeValue('blue.100', 'rgba(0,39,82,0.3)')}
+          >
+            <Text fontSize="10px" fontWeight="bold" color="blue.600" textTransform="uppercase" letterSpacing="wider" mb={1}>
+              {t('consultation:form.triageObservations')}
+            </Text>
+            <Text fontSize="sm" color={useColorModeValue('gray.700', 'gray.300')}>
+              {patient.triageObservations}
+            </Text>
+          </Box>
+        )}
 
         <Grid templateColumns={{ base: '1fr', lg: 'repeat(12, 1fr)' }} gap={5}>
           {/* Left Column: 8/12 */}
           <GridItem colSpan={{ base: 1, lg: 8 }} display="flex" flexDir="column" gap={5}>
             <TextAreaCard
-              title="Anamnesis"
-              subtitle="Initial assessment and patient history"
+              title={t('consultation:form.anamnesis')}
+              subtitle={t('consultation:form.anamnesisSubtitle')}
               icon={LuFilePenLine}
-              placeholder="Describe the reason for consultation and symptoms..."
-              defaultValue={p.anamnesis}
+              placeholder={t('consultation:form.anamnesisPlaceholder')}
+              defaultValue={anamnesis}
               rows={8}
             />
             <TextAreaCard
-              title="Work Plan"
-              subtitle="Next steps and procedures"
+              title={t('consultation:form.workPlan')}
+              subtitle={t('consultation:form.workPlanSubtitle')}
               icon={LuClipboardList}
-              placeholder="Enter the proposed medical roadmap for this patient..."
-              defaultValue={p.workPlan}
+              placeholder={t('consultation:form.workPlanPlaceholder')}
+              defaultValue={workPlan}
               rows={5}
             />
           </GridItem>
@@ -117,7 +162,6 @@ export default function ConsultationPage() {
               display="flex"
               flexDir="column"
             >
-              {/* Title */}
               <HStack spacing={3} mb={4}>
                 <Flex
                   w={10}
@@ -131,7 +175,7 @@ export default function ConsultationPage() {
                   <LuHistory size={20} />
                 </Flex>
                 <Text fontSize="lg" fontWeight="bold" color={titleColor}>
-                  Background & History
+                  {t('consultation:form.backgroundHistory')}
                 </Text>
               </HStack>
 
@@ -140,7 +184,7 @@ export default function ConsultationPage() {
                 <Box>
                   <Flex align="center" justify="space-between" mb={3}>
                     <Text fontSize="10px" fontWeight="bold" color={sectionLabel} textTransform="uppercase" letterSpacing="widest">
-                      Medical History
+                      {t('consultation:form.medicalHistory')}
                     </Text>
                     <IconButton
                       aria-label="Add"
@@ -155,60 +199,14 @@ export default function ConsultationPage() {
                       _hover={{ bg: 'primary.500', color: 'white' }}
                     />
                   </Flex>
-
-                  {/* Saved Records */}
                   <Box mb={4}>
                     <Text fontSize="10px" color={chipSubtext} mb={2} fontStyle="italic">
-                      Saved Records
+                      {t('consultation:form.savedRecords')}
                     </Text>
                     <Wrap spacing={2}>
-                      {p.medicalHistory.map((item) => (
+                      {patient.medicalHistory.map((item) => (
                         <WrapItem key={item.label}>
-                          <HStack spacing={2}>
-                            <HistoryChip label={item.label} colorScheme={item.color} />
-                          </HStack>
-                        </WrapItem>
-                      ))}
-                    </Wrap>
-                  </Box>
-
-                  {/* New Entry */}
-                  <Box
-                    p={3}
-                    bg={newEntryBg}
-                    borderRadius="xl"
-                    border="1px dashed"
-                    borderColor={newEntryBorder}
-                  >
-                    <Text fontSize="10px" fontWeight="bold" color="primary.500" mb={2} display="flex" alignItems="center" gap={1}>
-                      NEW ENTRY
-                    </Text>
-                    <Wrap spacing={2}>
-                      {p.newEntries.map((item) => (
-                        <WrapItem key={item.label}>
-                          <HStack
-                            px={3}
-                            py={1.5}
-                            borderRadius="full"
-                            fontSize="xs"
-                            fontWeight="semibold"
-                            bg={useColorModeValue('white', 'gray.800')}
-                            color={useColorModeValue('primary.500', 'primary.300')}
-                            border="1px solid"
-                            borderColor={useColorModeValue('rgba(0,39,82,0.3)', 'primary.700')}
-                            shadow="sm"
-                            spacing={2}
-                          >
-                            <Text>{item.label}</Text>
-                            <Box
-                              as="button"
-                              _hover={{ color: 'accent.500' }}
-                              display="flex"
-                              alignItems="center"
-                            >
-                              <LuX size={14} />
-                            </Box>
-                          </HStack>
+                          <HistoryChip label={item.label} colorScheme={item.color} />
                         </WrapItem>
                       ))}
                     </Wrap>
@@ -219,7 +217,7 @@ export default function ConsultationPage() {
                 <Box>
                   <Flex align="center" justify="space-between" mb={3}>
                     <Text fontSize="10px" fontWeight="bold" color={sectionLabel} textTransform="uppercase" letterSpacing="widest">
-                      Surgical History
+                      {t('consultation:form.surgicalHistory')}
                     </Text>
                     <IconButton
                       aria-label="Add"
@@ -234,13 +232,12 @@ export default function ConsultationPage() {
                       _hover={{ bg: 'primary.500', color: 'white' }}
                     />
                   </Flex>
-
                   <Box mb={4}>
                     <Text fontSize="10px" color={chipSubtext} mb={2} fontStyle="italic">
-                      Saved Records
+                      {t('consultation:form.savedRecords')}
                     </Text>
                     <Wrap spacing={2}>
-                      {p.surgicalHistory.map((item) => (
+                      {patient.surgicalHistory.map((item) => (
                         <WrapItem key={item.label}>
                           <HistoryChip label={item.label} colorScheme={item.color} />
                         </WrapItem>
@@ -253,20 +250,8 @@ export default function ConsultationPage() {
                 <Box pt={4} borderTop="1px solid" borderColor={cardBorder}>
                   <Flex align="center" justify="space-between" mb={3}>
                     <Text fontSize="10px" fontWeight="bold" color={sectionLabel} textTransform="uppercase" letterSpacing="widest">
-                      Allergies
+                      {t('consultation:form.allergies')}
                     </Text>
-                    <IconButton
-                      aria-label="Add"
-                      icon={<LuPlus size={16} />}
-                      size="xs"
-                      w={6}
-                      h={6}
-                      minW={6}
-                      borderRadius="lg"
-                      bg={addBtnBg}
-                      color="primary.500"
-                      _hover={{ bg: 'primary.500', color: 'white' }}
-                    />
                   </Flex>
                   <Box
                     p={3}
@@ -275,14 +260,9 @@ export default function ConsultationPage() {
                     border="1px solid"
                     borderColor={allergyBorder}
                   >
-                    <Flex align="center" justify="space-between">
-                      <Text fontSize="sm" color={allergyColor} fontWeight="medium">
-                        {p.allergies}
-                      </Text>
-                      <Box as="button" color="red.300" _hover={{ color: 'red.600' }} transition="color 0.2s">
-                        <LuPencil size={18} />
-                      </Box>
-                    </Flex>
+                    <Text fontSize="sm" color={allergyColor} fontWeight="medium">
+                      {patient.allergies}
+                    </Text>
                   </Box>
                 </Box>
               </VStack>
@@ -294,13 +274,13 @@ export default function ConsultationPage() {
       {/* Action Bar */}
       <ActionBar
         leftActions={[
-          { label: 'Diagnosis', icon: LuActivity },
-          { label: 'Treatment', icon: LuPill },
-          { label: 'Lab Orders', icon: LuFlaskConical },
+          { label: t('consultation:form.diagnosis'), icon: LuActivity },
+          { label: t('consultation:form.treatment'), icon: LuPill },
+          { label: t('consultation:form.labOrders'), icon: LuFlaskConical },
         ]}
         rightActions={[
-          { label: 'Save Draft', variant: 'outline' },
-          { label: 'Finish Consultation', variant: 'primary' },
+          { label: t('common:actions.saveDraft'), variant: 'outline' },
+          { label: t('consultation:form.finishConsultation'), variant: 'primary', onClick: () => handleFinishConsultation('farmacia') },
         ]}
       />
     </Box>

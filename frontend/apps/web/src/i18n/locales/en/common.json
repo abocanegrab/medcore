@@ -1,0 +1,32 @@
+{
+  "patient": "Patient",
+  "patients": "Patients",
+  "status": {
+    "registered": "Registered",
+    "in_triage": "In Triage",
+    "triaged": "Triaged",
+    "in_consultation": "In Consultation",
+    "post_consultation": "Post-Consultation",
+    "completed": "Completed"
+  },
+  "priority": {
+    "urgent": "Urgent",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "vitals": {
+    "weight": "Weight",
+    "height": "Height",
+    "temperature": "Temp",
+    "bloodPressure": "BP"
+  },
+  "actions": {
+    "saveDraft": "Save Draft",
+    "cancel": "Cancel"
+  },
+  "notFound": "Patient not found",
+  "noData": "No data available",
+  "years": "Years",
+  "registered": "Registered"
+}

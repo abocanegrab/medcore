@@ -1,0 +1,18 @@
+{
+  "header": {
+    "searchPlaceholder": "Search patients, records...",
+    "language": "Language",
+    "english": "English",
+    "spanish": "Espanol"
+  },
+  "patientBanner": {
+    "patientId": "Patient ID",
+    "weight": "Weight",
+    "height": "Height",
+    "temp": "Temp",
+    "bp": "BP"
+  },
+  "waiting": "WAITING",
+  "ready": "READY",
+  "pending": "PENDING"
+}

@@ -1,6 +1,7 @@
 // Layout
 export { AppShell } from './components/layout/AppShell'
 export { Sidebar } from './components/layout/Sidebar'
+export type { SidebarModule, SubOption } from './components/layout/Sidebar'
 export { Header } from './components/layout/Header'
 export { GlassPanel } from './components/layout/GlassPanel'
 export { BentoCard } from './components/layout/BentoCard'
