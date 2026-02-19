@@ -8,11 +8,56 @@ export type PatientStatus =
 
 export type NextStep = 'farmacia' | 'laboratorio' | 'salida'
 
+export type PatientType = 'N' | 'C' | 'R'
+export type DiagnosisType = 'definitivo' | 'presuntivo' | 'repetitivo'
+export type IllnessDurationUnit = 'minutes' | 'hours' | 'days' | 'weeks'
+export type MedicationRoute = 'oral' | 'IV' | 'IM' | 'topical' | 'sublingual' | 'inhalation'
+export type AppointmentSource = 'web' | 'phone' | 'whatsapp' | 'callcenter'
+
 export interface PatientVitals {
   weight: string
   height: string
   temperature: string
   bloodPressure: string
+}
+
+export interface LabExamOrder {
+  id: string
+  examId: string
+  examName: string
+  categoryName: string
+}
+
+export interface ImagingExamOrder {
+  id: string
+  examId: string
+  examName: string
+  categoryName: string
+}
+
+export interface MedicationOrder {
+  id: string
+  medicationName: string
+  quantity: number
+  days: number
+  route: MedicationRoute
+  indication: string
+}
+
+export interface Diagnosis {
+  id: string
+  cie10Code: string
+  cie10Label: string
+  type: DiagnosisType
+  labExams: LabExamOrder[]
+  imagingExams: ImagingExamOrder[]
+  medications: MedicationOrder[]
+}
+
+export interface RestCertificate {
+  days: number
+  startDate: string
+  reason: string
 }
 
 export interface Patient {
@@ -35,6 +80,22 @@ export interface Patient {
   medicalHistory: { label: string; color: 'red' | 'slate' | 'blue' | 'amber' }[]
   surgicalHistory: { label: string; color: 'red' | 'slate' | 'blue' | 'amber' }[]
   allergies: string
+  patientTypeEstablishment?: PatientType
+  patientTypeService?: PatientType
+  illnessDuration?: { value: number; unit: IllnessDurationUnit }
+  mainSymptom?: string
+  clinicalExam?: string
+  diagnoses?: Diagnosis[]
+  treatmentObservations?: string
+  nextControlDate?: string
+  medicalNotes?: string
+  restCertificate?: RestCertificate
+  consultationSignedAt?: string
+  appointmentId?: string
+  appointmentTime?: string
+  receiptId?: string
+  accountNumber?: string
+  serviceType?: string
 }
 
 export const initialPatients: Patient[] = [
@@ -49,6 +110,8 @@ export const initialPatients: Patient[] = [
     status: 'registered',
     priority: 'medium',
     registeredAt: '08:15 AM',
+    appointmentTime: '08:30 AM',
+    serviceType: 'Medicina General',
     medicalHistory: [{ label: 'Diabetes Type 2', color: 'red' }],
     surgicalHistory: [],
     allergies: 'Penicillin',
@@ -64,6 +127,8 @@ export const initialPatients: Patient[] = [
     status: 'registered',
     priority: 'high',
     registeredAt: '08:30 AM',
+    appointmentTime: '09:00 AM',
+    serviceType: 'Cardiologia',
     medicalHistory: [
       { label: 'Hypertension', color: 'red' },
       { label: 'COPD', color: 'slate' },
@@ -82,6 +147,8 @@ export const initialPatients: Patient[] = [
     status: 'in_triage',
     priority: 'low',
     registeredAt: '07:45 AM',
+    appointmentTime: '08:00 AM',
+    serviceType: 'Medicina General',
     medicalHistory: [],
     surgicalHistory: [],
     allergies: 'NIEGA RAM',
@@ -97,6 +164,8 @@ export const initialPatients: Patient[] = [
     status: 'triaged',
     priority: 'medium',
     registeredAt: '07:30 AM',
+    appointmentTime: '07:30 AM',
+    serviceType: 'Medicina General',
     vitals: { weight: '78', height: '182', temperature: '36.5', bloodPressure: '120/80' },
     triageObservations: 'Patient complains of persistent chest pain radiating to the left arm. No fever. Vitals stable.',
     medicalHistory: [
@@ -120,6 +189,8 @@ export const initialPatients: Patient[] = [
     status: 'triaged',
     priority: 'high',
     registeredAt: '07:00 AM',
+    appointmentTime: '07:00 AM',
+    serviceType: 'Medicina Interna',
     vitals: { weight: '65', height: '160', temperature: '37.8', bloodPressure: '140/90' },
     triageObservations: 'Fever since yesterday evening. Headache and body aches. Elevated BP noted.',
     medicalHistory: [{ label: 'Migraine', color: 'blue' }],
@@ -137,6 +208,8 @@ export const initialPatients: Patient[] = [
     status: 'in_consultation',
     priority: 'medium',
     registeredAt: '06:45 AM',
+    appointmentTime: '07:00 AM',
+    serviceType: 'Traumatologia',
     vitals: { weight: '90', height: '175', temperature: '36.7', bloodPressure: '130/85' },
     triageObservations: 'Recurring lower back pain. Patient reports pain level 6/10.',
     medicalHistory: [{ label: 'Lumbalgia', color: 'slate' }],
@@ -154,12 +227,32 @@ export const initialPatients: Patient[] = [
     status: 'post_consultation',
     priority: 'medium',
     registeredAt: '06:30 AM',
+    appointmentTime: '06:30 AM',
+    serviceType: 'Cardiologia',
     vitals: { weight: '70', height: '165', temperature: '36.4', bloodPressure: '125/82' },
     triageObservations: 'Routine follow-up. No acute complaints.',
     anamnesis: 'Follow-up for controlled hypertension. Patient reports good medication adherence.',
     workPlan: 'Continue current medication. Repeat labs in 3 months.',
     prescription: 'Losartan 50mg - 1 tablet daily\nAmlodipine 5mg - 1 tablet daily',
     nextStep: 'farmacia',
+    diagnoses: [
+      {
+        id: 'd1',
+        cie10Code: 'I10',
+        cie10Label: 'Hipertension esencial (primaria)',
+        type: 'definitivo',
+        labExams: [
+          { id: 'le1', examId: 'bio-01', examName: 'Glucosa en ayunas', categoryName: 'Bioquimica' },
+          { id: 'le2', examId: 'bio-02', examName: 'Perfil lipidico', categoryName: 'Bioquimica' },
+        ],
+        imagingExams: [],
+        medications: [
+          { id: 'med1', medicationName: 'Losartan 50mg', quantity: 30, days: 30, route: 'oral', indication: '1 tableta cada 24 horas' },
+          { id: 'med2', medicationName: 'Amlodipino 5mg', quantity: 30, days: 30, route: 'oral', indication: '1 tableta cada 24 horas' },
+        ],
+      },
+    ],
+    consultationSignedAt: '2024-09-01T10:30:00Z',
     medicalHistory: [{ label: 'Hypertension', color: 'red' }],
     surgicalHistory: [],
     allergies: 'NIEGA RAM',
@@ -175,11 +268,27 @@ export const initialPatients: Patient[] = [
     status: 'post_consultation',
     priority: 'low',
     registeredAt: '06:00 AM',
+    appointmentTime: '06:00 AM',
+    serviceType: 'Medicina General',
     vitals: { weight: '82', height: '178', temperature: '36.6', bloodPressure: '118/76' },
     triageObservations: 'Routine check. No issues found.',
     anamnesis: 'Annual physical exam. No complaints. All systems review unremarkable.',
     workPlan: 'Order CBC and lipid panel. Schedule follow-up in 12 months.',
     nextStep: 'laboratorio',
+    diagnoses: [
+      {
+        id: 'd2',
+        cie10Code: 'Z00.0',
+        cie10Label: 'Examen medico general',
+        type: 'definitivo',
+        labExams: [
+          { id: 'le3', examId: 'hem-01', examName: 'Hemograma completo', categoryName: 'Hematologia' },
+          { id: 'le4', examId: 'bio-02', examName: 'Perfil lipidico', categoryName: 'Bioquimica' },
+        ],
+        imagingExams: [],
+        medications: [],
+      },
+    ],
     medicalHistory: [],
     surgicalHistory: [],
     allergies: 'NIEGA RAM',

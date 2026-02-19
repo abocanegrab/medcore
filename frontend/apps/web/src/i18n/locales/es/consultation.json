@@ -8,7 +8,15 @@
     "noPatientsWaiting": "No hay pacientes en espera",
     "allSeen": "Todos los pacientes triados han sido atendidos",
     "beginConsultation": "Iniciar Consulta",
-    "today": "Hoy"
+    "today": "Hoy",
+    "scheduledTab": "Citados",
+    "registeredTab": "Registrados",
+    "triagedTab": "Triados",
+    "allScheduledTitle": "Todos los Pacientes Programados",
+    "allScheduledSub": "Pacientes registrados y triados para hoy",
+    "registeredTitle": "Pacientes Registrados",
+    "registeredSub": "Pacientes aun no triados",
+    "noRegistered": "No hay pacientes registrados"
   },
   "form": {
     "title": "Consulta de Paciente",
@@ -28,6 +36,38 @@
     "diagnosis": "Diagnostico",
     "treatment": "Tratamiento",
     "labOrders": "Ordenes de Laboratorio",
-    "finishConsultation": "Finalizar Consulta"
+    "finishConsultation": "Finalizar Consulta",
+    "signAndFinish": "Firmar y Finalizar",
+    "clinicalExam": "Examen Clinico",
+    "clinicalExamSubtitle": "Hallazgos del examen fisico",
+    "mainSymptom": "Motivo de Consulta",
+    "illnessDuration": "Tiempo de Enfermedad",
+    "patientTypeEstablishment": "Tipo Paciente (Establecimiento)",
+    "patientTypeService": "Tipo Paciente (Servicio)",
+    "notes": "Notas Medicas",
+    "rest": "Certificado de Descanso"
+  },
+  "wizard": {
+    "anamnesis": "Anamnesis",
+    "diagnosis": "Diagnostico",
+    "lab": "Lab",
+    "imaging": "Imagen",
+    "treatment": "Tratamiento",
+    "notes": "Notas",
+    "rest": "Descanso"
+  },
+  "orders": {
+    "labOrders": "Ordenes de Laboratorio",
+    "imagingOrders": "Ordenes de Imagen",
+    "pharmacyOrders": "Receta Medica",
+    "confirmAndSend": "Confirmar y Enviar Ordenes",
+    "nextDestination": "Proximo destino del paciente",
+    "generatedOrders": "Ordenes Generadas"
+  },
+  "signing": {
+    "signingDocument": "Firmando documento...",
+    "biometricVerification": "Verificacion biometrica RENIEC en proceso",
+    "documentSigned": "Documento firmado",
+    "signatureId": "ID de Firma"
   }
 }

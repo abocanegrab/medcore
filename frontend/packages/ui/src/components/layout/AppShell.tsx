@@ -35,7 +35,7 @@ export function AppShell({ modules = [], currentUser, onLogout }: AppShellProps)
         transition="all 0.3s"
         css={{ scrollBehavior: 'smooth' }}
       >
-        <Outlet context={{ onMenuOpen: onDrawerOpen, currentUser }} />
+        <Outlet context={{ onMenuOpen: onDrawerOpen, currentUser, onLogout }} />
       </Box>
     </Box>
   )

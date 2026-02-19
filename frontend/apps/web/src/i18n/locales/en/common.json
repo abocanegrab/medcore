@@ -23,10 +23,40 @@
   },
   "actions": {
     "saveDraft": "Save Draft",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "search": "Search",
+    "add": "Add",
+    "remove": "Remove",
+    "edit": "Edit"
   },
   "notFound": "Patient not found",
   "noData": "No data available",
   "years": "Years",
-  "registered": "Registered"
+  "registered": "Registered",
+  "patientType": {
+    "N": "New",
+    "C": "Continuing",
+    "R": "Re-entry"
+  },
+  "diagnosisType": {
+    "definitivo": "Definitive",
+    "presuntivo": "Presumptive",
+    "repetitivo": "Repetitive"
+  },
+  "medicationRoute": {
+    "oral": "Oral",
+    "IV": "IV",
+    "IM": "IM",
+    "topical": "Topical",
+    "sublingual": "Sublingual",
+    "inhalation": "Inhalation"
+  },
+  "timeUnits": {
+    "minutes": "Minutes",
+    "hours": "Hours",
+    "days": "Days",
+    "weeks": "Weeks"
+  }
 }

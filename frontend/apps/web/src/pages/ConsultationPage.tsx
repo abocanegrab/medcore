@@ -1,59 +1,97 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import {
   Box,
-  Grid,
-  GridItem,
-  VStack,
-  HStack,
   Text,
+  HStack,
+  Button,
   Flex,
-  Wrap,
-  WrapItem,
   useColorModeValue,
-  IconButton,
+  useToast,
 } from '@chakra-ui/react'
 import { useOutletContext, useParams, useNavigate } from 'react-router-dom'
 import {
   LuFilePenLine,
-  LuClipboardList,
-  LuHistory,
-  LuPlus,
   LuActivity,
-  LuPill,
   LuFlaskConical,
+  LuScanLine,
+  LuPill,
+  LuFileText,
+  LuBedDouble,
+  LuSave,
+  LuShieldCheck,
 } from 'react-icons/lu'
 import {
   Header,
   PatientBanner,
-  TextAreaCard,
-  HistoryChip,
-  ActionBar,
+  WizardTabs,
 } from '@medcore/ui'
+import type { WizardTab } from '@medcore/ui'
 import { useTranslation } from 'react-i18next'
 import { usePatientQueue } from '../contexts/PatientQueueContext'
-import type { NextStep } from '../data/mockPatients'
+import AnamnesisTab from '../components/consultation/AnamnesisTab'
+import DiagnosisTab from '../components/consultation/DiagnosisTab'
+import LabExamsTab from '../components/consultation/LabExamsTab'
+import ImagingExamsTab from '../components/consultation/ImagingExamsTab'
+import TreatmentTab from '../components/consultation/TreatmentTab'
+import NotesTab from '../components/consultation/NotesTab'
+import RestTab from '../components/consultation/RestTab'
+import OrderPreviewModal from '../components/OrderPreviewModal'
+import SigningModal from '../components/SigningModal'
+import type {
+  Diagnosis,
+  DiagnosisType,
+  PatientType,
+  IllnessDurationUnit,
+  MedicationOrder,
+  MedicationRoute,
+  RestCertificate,
+} from '../data/mockPatients'
+import type { CIE10Code } from '../data/catalogs'
 
 export default function ConsultationPage() {
   const { t } = useTranslation(['consultation', 'common'])
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { onMenuOpen, currentUser } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any }>()
+  const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { getPatientById, updatePatientData } = usePatientQueue()
+  const toast = useToast()
 
   const patient = id ? getPatientById(id) : undefined
 
-  const [anamnesis, setAnamnesis] = useState(patient?.anamnesis ?? '')
-  const [workPlan, setWorkPlan] = useState(patient?.workPlan ?? '')
+  const [activeTab, setActiveTab] = useState('anamnesis')
+
+  // Anamnesis state
+  const [patientTypeEstablishment, setPatientTypeEstablishment] = useState<PatientType>(patient?.patientTypeEstablishment || 'N')
+  const [patientTypeService, setPatientTypeService] = useState<PatientType>(patient?.patientTypeService || 'N')
+  const [illnessDuration, setIllnessDuration] = useState<{ value: number; unit: IllnessDurationUnit }>(
+    patient?.illnessDuration || { value: 0, unit: 'days' },
+  )
+  const [mainSymptom, setMainSymptom] = useState(patient?.mainSymptom || '')
+  const [anamnesis, setAnamnesis] = useState(patient?.anamnesis || '')
+  const [workPlan, setWorkPlan] = useState(patient?.workPlan || '')
+  const [clinicalExam, setClinicalExam] = useState(patient?.clinicalExam || '')
+
+  // Diagnosis state
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>(patient?.diagnoses || [])
+
+  // Treatment state
+  const [treatmentObservations, setTreatmentObservations] = useState(patient?.treatmentObservations || '')
+  const [nextControlDate, setNextControlDate] = useState(patient?.nextControlDate || '')
+
+  // Notes state
+  const [medicalNotes, setMedicalNotes] = useState(patient?.medicalNotes || '')
+
+  // Rest state
+  const [restCertificate, setRestCertificate] = useState<RestCertificate>(
+    patient?.restCertificate || { days: 0, startDate: '', reason: '' },
+  )
+
+  // Modals
+  const [isSigningOpen, setIsSigningOpen] = useState(false)
+  const [isOrderPreviewOpen, setIsOrderPreviewOpen] = useState(false)
 
   const cardBg = useColorModeValue('white', 'card.dark')
   const cardBorder = useColorModeValue('gray.100', 'gray.800')
-  const sectionLabel = useColorModeValue('gray.400', 'gray.500')
-  const titleColor = useColorModeValue('primary.500', 'white')
-  const chipSubtext = useColorModeValue('gray.400', 'gray.500')
-  const addBtnBg = useColorModeValue('rgba(0,39,82,0.1)', 'rgba(0,39,82,0.3)')
-  const allergyBg = useColorModeValue('red.50', 'rgba(127,29,29,0.2)')
-  const allergyBorder = useColorModeValue('red.100', 'rgba(127,29,29,0.3)')
-  const allergyColor = useColorModeValue('red.600', 'red.400')
 
   if (!patient) {
     return (
@@ -63,16 +101,164 @@ export default function ConsultationPage() {
     )
   }
 
-  const handleFinishConsultation = (nextStep: NextStep) => {
+  // Diagnosis handlers
+  const handleAddDiagnosis = (code: CIE10Code) => {
+    const exists = diagnoses.find((d) => d.cie10Code === code.code)
+    if (exists) {
+      toast({ title: 'Diagnostico ya agregado', status: 'warning', duration: 2000 })
+      return
+    }
+    const newDiag: Diagnosis = {
+      id: `diag-${Date.now()}`,
+      cie10Code: code.code,
+      cie10Label: code.label,
+      type: 'presuntivo',
+      labExams: [],
+      imagingExams: [],
+      medications: [],
+    }
+    setDiagnoses((prev) => [...prev, newDiag])
+  }
+
+  const handleRemoveDiagnosis = (id: string) => {
+    setDiagnoses((prev) => prev.filter((d) => d.id !== id))
+  }
+
+  const handleDiagnosisTypeChange = (id: string, type: DiagnosisType) => {
+    setDiagnoses((prev) => prev.map((d) => (d.id === id ? { ...d, type } : d)))
+  }
+
+  // Lab exam handlers
+  const handleToggleLabExam = (diagId: string, examId: string, examName: string, categoryName: string) => {
+    setDiagnoses((prev) =>
+      prev.map((d) => {
+        if (d.id !== diagId) return d
+        const exists = d.labExams.find((e) => e.examId === examId)
+        return {
+          ...d,
+          labExams: exists
+            ? d.labExams.filter((e) => e.examId !== examId)
+            : [...d.labExams, { id: `le-${Date.now()}`, examId, examName, categoryName }],
+        }
+      }),
+    )
+  }
+
+  // Imaging exam handlers
+  const handleToggleImagingExam = (diagId: string, examId: string, examName: string, categoryName: string) => {
+    setDiagnoses((prev) =>
+      prev.map((d) => {
+        if (d.id !== diagId) return d
+        const exists = d.imagingExams.find((e) => e.examId === examId)
+        return {
+          ...d,
+          imagingExams: exists
+            ? d.imagingExams.filter((e) => e.examId !== examId)
+            : [...d.imagingExams, { id: `ie-${Date.now()}`, examId, examName, categoryName }],
+        }
+      }),
+    )
+  }
+
+  // Medication handlers
+  const handleAddMedication = (diagId: string, med: MedicationOrder) => {
+    setDiagnoses((prev) =>
+      prev.map((d) => (d.id === diagId ? { ...d, medications: [...d.medications, med] } : d)),
+    )
+  }
+
+  const handleRemoveMedication = (diagId: string, medId: string) => {
+    setDiagnoses((prev) =>
+      prev.map((d) =>
+        d.id === diagId ? { ...d, medications: d.medications.filter((m) => m.id !== medId) } : d,
+      ),
+    )
+  }
+
+  const handleUpdateMedication = (diagId: string, medId: string, data: Partial<MedicationOrder>) => {
+    setDiagnoses((prev) =>
+      prev.map((d) =>
+        d.id === diagId
+          ? { ...d, medications: d.medications.map((m) => (m.id === medId ? { ...m, ...data } : m)) }
+          : d,
+      ),
+    )
+  }
+
+  // Save draft
+  const handleSaveDraft = () => {
     updatePatientData(patient.id, {
-      status: 'post_consultation',
+      patientTypeEstablishment,
+      patientTypeService,
+      illnessDuration,
+      mainSymptom,
       anamnesis,
       workPlan,
-      nextStep,
-      prescription: nextStep === 'farmacia' ? 'Prescribed medication (auto-generated for demo)' : undefined,
+      clinicalExam,
+      diagnoses,
+      treatmentObservations,
+      nextControlDate,
+      medicalNotes,
+      restCertificate,
     })
+    toast({ title: 'Borrador guardado', status: 'success', duration: 2000 })
+  }
+
+  // Sign and finish
+  const handleSignAndFinish = () => {
+    setIsSigningOpen(true)
+  }
+
+  const handleSigningComplete = () => {
+    setIsSigningOpen(false)
+
+    // Build prescription string from medications
+    const prescriptionLines = diagnoses.flatMap((d) =>
+      d.medications.map((m) => `${m.medicationName} x${m.quantity} - ${m.days}d - ${m.route} - ${m.indication}`),
+    )
+
+    updatePatientData(patient.id, {
+      status: 'post_consultation',
+      patientTypeEstablishment,
+      patientTypeService,
+      illnessDuration,
+      mainSymptom,
+      anamnesis,
+      workPlan,
+      clinicalExam,
+      diagnoses,
+      treatmentObservations,
+      nextControlDate,
+      medicalNotes,
+      restCertificate,
+      consultationSignedAt: new Date().toISOString(),
+      nextStep: prescriptionLines.length > 0 ? 'farmacia' : 'salida',
+      prescription: prescriptionLines.join('\n') || undefined,
+    })
+
+    setIsOrderPreviewOpen(true)
+  }
+
+  const handleOrdersConfirmed = () => {
+    setIsOrderPreviewOpen(false)
+    toast({ title: 'Consulta finalizada y ordenes generadas', status: 'success', duration: 3000 })
     navigate('/consultation')
   }
+
+  // Tab definitions
+  const totalLabExams = diagnoses.reduce((sum, d) => sum + d.labExams.length, 0)
+  const totalImagingExams = diagnoses.reduce((sum, d) => sum + d.imagingExams.length, 0)
+  const totalMedications = diagnoses.reduce((sum, d) => sum + d.medications.length, 0)
+
+  const tabs: WizardTab[] = [
+    { id: 'anamnesis', label: 'Anamnesis', icon: LuFilePenLine, isComplete: !!anamnesis },
+    { id: 'diagnosis', label: 'Diagnostico', icon: LuActivity, badge: diagnoses.length, isComplete: diagnoses.length > 0 },
+    { id: 'lab', label: 'Lab', icon: LuFlaskConical, badge: totalLabExams },
+    { id: 'imaging', label: 'Imagen', icon: LuScanLine, badge: totalImagingExams },
+    { id: 'treatment', label: 'Tratamiento', icon: LuPill, badge: totalMedications },
+    { id: 'notes', label: 'Notas', icon: LuFileText, isComplete: !!medicalNotes },
+    { id: 'rest', label: 'Descanso', icon: LuBedDouble, isComplete: restCertificate.days > 0 },
+  ]
 
   return (
     <Box pb={24}>
@@ -87,6 +273,7 @@ export default function ConsultationPage() {
         showSearch={false}
         onMenuClick={onMenuOpen}
         currentUser={currentUser}
+        onLogout={onLogout}
       />
 
       <Box
@@ -109,7 +296,7 @@ export default function ConsultationPage() {
           vitals={patient.vitals ?? { weight: '--', height: '--', temperature: '--', bloodPressure: '--' }}
         />
 
-        {/* Triage observations (read-only) */}
+        {/* Triage observations */}
         {patient.triageObservations && (
           <Box
             bg={useColorModeValue('blue.50', 'rgba(0,39,82,0.15)')}
@@ -127,161 +314,126 @@ export default function ConsultationPage() {
           </Box>
         )}
 
-        <Grid templateColumns={{ base: '1fr', lg: 'repeat(12, 1fr)' }} gap={5}>
-          {/* Left Column: 8/12 */}
-          <GridItem colSpan={{ base: 1, lg: 8 }} display="flex" flexDir="column" gap={5}>
-            <TextAreaCard
-              title={t('consultation:form.anamnesis')}
-              subtitle={t('consultation:form.anamnesisSubtitle')}
-              icon={LuFilePenLine}
-              placeholder={t('consultation:form.anamnesisPlaceholder')}
-              defaultValue={anamnesis}
-              rows={8}
-            />
-            <TextAreaCard
-              title={t('consultation:form.workPlan')}
-              subtitle={t('consultation:form.workPlanSubtitle')}
-              icon={LuClipboardList}
-              placeholder={t('consultation:form.workPlanPlaceholder')}
-              defaultValue={workPlan}
-              rows={5}
-            />
-          </GridItem>
+        {/* Wizard Tabs */}
+        <WizardTabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
-          {/* Right Column: 4/12 */}
-          <GridItem colSpan={{ base: 1, lg: 4 }}>
-            <Box
-              bg={cardBg}
-              borderRadius="3xl"
-              p={5}
-              shadow="soft"
-              border="1px solid"
-              borderColor={cardBorder}
-              h="full"
-              overflow="hidden"
-              display="flex"
-              flexDir="column"
-            >
-              <HStack spacing={3} mb={4}>
-                <Flex
-                  w={10}
-                  h={10}
-                  borderRadius="xl"
-                  bg={useColorModeValue('rgba(185,28,28,0.05)', 'rgba(185,28,28,0.15)')}
-                  align="center"
-                  justify="center"
-                  color="accent.500"
-                >
-                  <LuHistory size={20} />
-                </Flex>
-                <Text fontSize="lg" fontWeight="bold" color={titleColor}>
-                  {t('consultation:form.backgroundHistory')}
-                </Text>
-              </HStack>
-
-              <VStack spacing={5} align="stretch" flex={1} overflowY="auto" pr={2}>
-                {/* Medical History */}
-                <Box>
-                  <Flex align="center" justify="space-between" mb={3}>
-                    <Text fontSize="10px" fontWeight="bold" color={sectionLabel} textTransform="uppercase" letterSpacing="widest">
-                      {t('consultation:form.medicalHistory')}
-                    </Text>
-                    <IconButton
-                      aria-label="Add"
-                      icon={<LuPlus size={16} />}
-                      size="xs"
-                      w={6}
-                      h={6}
-                      minW={6}
-                      borderRadius="lg"
-                      bg={addBtnBg}
-                      color="primary.500"
-                      _hover={{ bg: 'primary.500', color: 'white' }}
-                    />
-                  </Flex>
-                  <Box mb={4}>
-                    <Text fontSize="10px" color={chipSubtext} mb={2} fontStyle="italic">
-                      {t('consultation:form.savedRecords')}
-                    </Text>
-                    <Wrap spacing={2}>
-                      {patient.medicalHistory.map((item) => (
-                        <WrapItem key={item.label}>
-                          <HistoryChip label={item.label} colorScheme={item.color} />
-                        </WrapItem>
-                      ))}
-                    </Wrap>
-                  </Box>
-                </Box>
-
-                {/* Surgical History */}
-                <Box>
-                  <Flex align="center" justify="space-between" mb={3}>
-                    <Text fontSize="10px" fontWeight="bold" color={sectionLabel} textTransform="uppercase" letterSpacing="widest">
-                      {t('consultation:form.surgicalHistory')}
-                    </Text>
-                    <IconButton
-                      aria-label="Add"
-                      icon={<LuPlus size={16} />}
-                      size="xs"
-                      w={6}
-                      h={6}
-                      minW={6}
-                      borderRadius="lg"
-                      bg={addBtnBg}
-                      color="primary.500"
-                      _hover={{ bg: 'primary.500', color: 'white' }}
-                    />
-                  </Flex>
-                  <Box mb={4}>
-                    <Text fontSize="10px" color={chipSubtext} mb={2} fontStyle="italic">
-                      {t('consultation:form.savedRecords')}
-                    </Text>
-                    <Wrap spacing={2}>
-                      {patient.surgicalHistory.map((item) => (
-                        <WrapItem key={item.label}>
-                          <HistoryChip label={item.label} colorScheme={item.color} />
-                        </WrapItem>
-                      ))}
-                    </Wrap>
-                  </Box>
-                </Box>
-
-                {/* Allergies */}
-                <Box pt={4} borderTop="1px solid" borderColor={cardBorder}>
-                  <Flex align="center" justify="space-between" mb={3}>
-                    <Text fontSize="10px" fontWeight="bold" color={sectionLabel} textTransform="uppercase" letterSpacing="widest">
-                      {t('consultation:form.allergies')}
-                    </Text>
-                  </Flex>
-                  <Box
-                    p={3}
-                    bg={allergyBg}
-                    borderRadius="xl"
-                    border="1px solid"
-                    borderColor={allergyBorder}
-                  >
-                    <Text fontSize="sm" color={allergyColor} fontWeight="medium">
-                      {patient.allergies}
-                    </Text>
-                  </Box>
-                </Box>
-              </VStack>
-            </Box>
-          </GridItem>
-        </Grid>
+        {/* Tab Content */}
+        {activeTab === 'anamnesis' && (
+          <AnamnesisTab
+            patient={patient}
+            patientTypeEstablishment={patientTypeEstablishment}
+            onPatientTypeEstablishmentChange={setPatientTypeEstablishment}
+            patientTypeService={patientTypeService}
+            onPatientTypeServiceChange={setPatientTypeService}
+            illnessDuration={illnessDuration}
+            onIllnessDurationChange={setIllnessDuration}
+            mainSymptom={mainSymptom}
+            onMainSymptomChange={setMainSymptom}
+            anamnesis={anamnesis}
+            onAnamnesisChange={setAnamnesis}
+            workPlan={workPlan}
+            onWorkPlanChange={setWorkPlan}
+            clinicalExam={clinicalExam}
+            onClinicalExamChange={setClinicalExam}
+          />
+        )}
+        {activeTab === 'diagnosis' && (
+          <DiagnosisTab
+            diagnoses={diagnoses}
+            onAdd={handleAddDiagnosis}
+            onRemove={handleRemoveDiagnosis}
+            onTypeChange={handleDiagnosisTypeChange}
+          />
+        )}
+        {activeTab === 'lab' && (
+          <LabExamsTab
+            diagnoses={diagnoses}
+            onToggleExam={handleToggleLabExam}
+          />
+        )}
+        {activeTab === 'imaging' && (
+          <ImagingExamsTab
+            diagnoses={diagnoses}
+            onToggleExam={handleToggleImagingExam}
+          />
+        )}
+        {activeTab === 'treatment' && (
+          <TreatmentTab
+            diagnoses={diagnoses}
+            onAddMedication={handleAddMedication}
+            onRemoveMedication={handleRemoveMedication}
+            onUpdateMedication={handleUpdateMedication}
+            treatmentObservations={treatmentObservations}
+            onTreatmentObservationsChange={setTreatmentObservations}
+            nextControlDate={nextControlDate}
+            onNextControlDateChange={setNextControlDate}
+          />
+        )}
+        {activeTab === 'notes' && (
+          <NotesTab notes={medicalNotes} onNotesChange={setMedicalNotes} />
+        )}
+        {activeTab === 'rest' && (
+          <RestTab
+            restCertificate={restCertificate}
+            onRestCertificateChange={setRestCertificate}
+          />
+        )}
       </Box>
 
-      {/* Action Bar */}
-      <ActionBar
-        leftActions={[
-          { label: t('consultation:form.diagnosis'), icon: LuActivity },
-          { label: t('consultation:form.treatment'), icon: LuPill },
-          { label: t('consultation:form.labOrders'), icon: LuFlaskConical },
-        ]}
-        rightActions={[
-          { label: t('common:actions.saveDraft'), variant: 'outline' },
-          { label: t('consultation:form.finishConsultation'), variant: 'primary', onClick: () => handleFinishConsultation('farmacia') },
-        ]}
+      {/* Sticky Action Bar */}
+      <Box
+        position="fixed"
+        bottom={0}
+        left={0}
+        right={0}
+        bg={cardBg}
+        borderTop="1px solid"
+        borderColor={cardBorder}
+        py={3}
+        px={6}
+        zIndex={10}
+      >
+        <Flex maxW="1800px" mx="auto" justify="flex-end" gap={3} pl={{ base: 4, md: '128px' }}>
+          <Button
+            leftIcon={<LuSave size={16} />}
+            variant="outline"
+            borderRadius="xl"
+            size="sm"
+            fontWeight="semibold"
+            onClick={handleSaveDraft}
+          >
+            {t('common:actions.saveDraft')}
+          </Button>
+          <Button
+            leftIcon={<LuShieldCheck size={16} />}
+            bg="primary.500"
+            color="white"
+            borderRadius="xl"
+            size="sm"
+            fontWeight="semibold"
+            _hover={{ bg: 'primary.400', transform: 'translateY(-1px)' }}
+            transition="all 0.2s"
+            shadow="md"
+            onClick={handleSignAndFinish}
+          >
+            Firmar y Finalizar
+          </Button>
+        </Flex>
+      </Box>
+
+      {/* Signing Modal */}
+      <SigningModal
+        isOpen={isSigningOpen}
+        onClose={() => setIsSigningOpen(false)}
+        onComplete={handleSigningComplete}
+      />
+
+      {/* Order Preview Modal */}
+      <OrderPreviewModal
+        isOpen={isOrderPreviewOpen}
+        onClose={handleOrdersConfirmed}
+        diagnoses={diagnoses}
+        patientName={patient.name}
       />
     </Box>
   )

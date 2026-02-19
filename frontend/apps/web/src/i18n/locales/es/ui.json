@@ -3,7 +3,8 @@
     "searchPlaceholder": "Buscar pacientes, registros...",
     "language": "Idioma",
     "english": "English",
-    "spanish": "Espanol"
+    "spanish": "Espanol",
+    "online": "En linea"
   },
   "patientBanner": {
     "patientId": "ID Paciente",
@@ -14,5 +15,26 @@
   },
   "waiting": "EN ESPERA",
   "ready": "LISTOS",
-  "pending": "PENDIENTES"
+  "pending": "PENDIENTES",
+  "table": {
+    "order": "#",
+    "appointmentTime": "Hora Cita",
+    "speaker": "Llamado",
+    "patient": "Paciente",
+    "patientType": "Tipo",
+    "ageGender": "Edad / Sexo",
+    "service": "Servicio",
+    "diagnosis": "Diagnostico",
+    "account": "Cta-Cte",
+    "action": "Accion"
+  },
+  "pagination": {
+    "total": "{{count}} pacientes en total",
+    "page": "Pagina {{current}} de {{total}}"
+  },
+  "filters": {
+    "allStatuses": "Todos los estados",
+    "allPriorities": "Todas las prioridades",
+    "search": "Buscar pacientes..."
+  }
 }

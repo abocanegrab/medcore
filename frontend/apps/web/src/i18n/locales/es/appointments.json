@@ -1,0 +1,37 @@
+{
+  "title": "Citas",
+  "weeklySchedule": "Agenda Semanal",
+  "newAppointment": "Nueva Cita",
+  "appointmentDetail": "Detalle de Cita",
+  "status": {
+    "scheduled": "Programada",
+    "confirmed": "Confirmada",
+    "arrived": "Llego",
+    "in_progress": "En Atencion",
+    "completed": "Completada",
+    "cancelled": "Cancelada"
+  },
+  "form": {
+    "patient": "Paciente",
+    "doctor": "Doctor",
+    "date": "Fecha",
+    "time": "Hora",
+    "service": "Servicio",
+    "source": "Fuente",
+    "reason": "Motivo",
+    "save": "Guardar Cita"
+  },
+  "sources": {
+    "web": "Web",
+    "phone": "Telefono",
+    "whatsapp": "WhatsApp",
+    "callcenter": "Call Center"
+  },
+  "actions": {
+    "confirm": "Confirmar",
+    "arrived": "Llego",
+    "cancel": "Cancelar Cita"
+  },
+  "created": "Cita creada exitosamente",
+  "today": "Hoy"
+}

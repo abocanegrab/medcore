@@ -11,6 +11,7 @@ import enConsultation from './locales/en/consultation.json'
 import enFarmacia from './locales/en/farmacia.json'
 import enLogin from './locales/en/login.json'
 import enUi from './locales/en/ui.json'
+import enAppointments from './locales/en/appointments.json'
 
 import esCommon from './locales/es/common.json'
 import esNav from './locales/es/nav.json'
@@ -21,6 +22,7 @@ import esConsultation from './locales/es/consultation.json'
 import esFarmacia from './locales/es/farmacia.json'
 import esLogin from './locales/es/login.json'
 import esUi from './locales/es/ui.json'
+import esAppointments from './locales/es/appointments.json'
 
 i18n
   .use(LanguageDetector)
@@ -37,6 +39,7 @@ i18n
         farmacia: enFarmacia,
         login: enLogin,
         ui: enUi,
+        appointments: enAppointments,
       },
       es: {
         common: esCommon,
@@ -48,10 +51,11 @@ i18n
         farmacia: esFarmacia,
         login: esLogin,
         ui: esUi,
+        appointments: esAppointments,
       },
     },
     fallbackLng: 'en',
-    ns: ['common', 'nav', 'dashboard', 'admision', 'triaje', 'consultation', 'farmacia', 'login', 'ui'],
+    ns: ['common', 'nav', 'dashboard', 'admision', 'triaje', 'consultation', 'farmacia', 'login', 'ui', 'appointments'],
     defaultNS: 'common',
     detection: {
       order: ['localStorage', 'navigator'],

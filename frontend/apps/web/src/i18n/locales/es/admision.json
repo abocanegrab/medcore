@@ -8,6 +8,9 @@
   "registerNewPatient": "Registrar Nuevo Paciente",
   "todaysRegistrations": "Registros de Hoy",
   "allPatientsProcessed": "Todos los pacientes procesados hoy",
+  "searchPlaceholder": "Buscar pacientes...",
+  "noPatients": "No hay pacientes registrados hoy",
+  "patientRegistered": "Paciente registrado exitosamente",
   "table": {
     "patient": "Paciente",
     "id": "ID",
@@ -15,5 +18,14 @@
     "registered": "Registrado",
     "status": "Estado",
     "priority": "Prioridad"
+  },
+  "form": {
+    "fullName": "Nombre Completo",
+    "age": "Edad",
+    "gender": "Genero",
+    "phone": "Telefono",
+    "documentId": "Documento de Identidad (DNI)",
+    "serviceType": "Tipo de Servicio",
+    "registerAndPay": "Registrar y Generar Boleta"
   }
 }

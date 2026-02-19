@@ -1,5 +1,6 @@
 import { Box, Text, HStack, Flex, Textarea, useColorModeValue } from '@chakra-ui/react'
 import type { IconType } from 'react-icons'
+import { MicButton } from './MicButton'
 
 interface TextAreaCardProps {
   title: string
@@ -7,10 +8,31 @@ interface TextAreaCardProps {
   icon: IconType
   placeholder?: string
   defaultValue?: string
+  value?: string
+  onChange?: (value: string) => void
   rows?: number
+  showMic?: boolean
+  onMicToggle?: () => void
+  isMicListening?: boolean
+  isMicSupported?: boolean
+  readOnly?: boolean
 }
 
-export function TextAreaCard({ title, subtitle, icon: Icon, placeholder, defaultValue, rows = 8 }: TextAreaCardProps) {
+export function TextAreaCard({
+  title,
+  subtitle,
+  icon: Icon,
+  placeholder,
+  defaultValue,
+  value,
+  onChange,
+  rows = 8,
+  showMic,
+  onMicToggle,
+  isMicListening = false,
+  isMicSupported = true,
+  readOnly,
+}: TextAreaCardProps) {
   const bg = useColorModeValue('white', 'card.dark')
   const border = useColorModeValue('gray.100', 'gray.800')
   const titleColor = useColorModeValue('primary.500', 'white')
@@ -19,6 +41,8 @@ export function TextAreaCard({ title, subtitle, icon: Icon, placeholder, default
   const inputBg = useColorModeValue('gray.50', 'gray.800')
   const inputBorder = useColorModeValue('gray.200', 'gray.700')
   const inputColor = useColorModeValue('gray.600', 'gray.300')
+
+  const isControlled = value !== undefined
 
   return (
     <Box
@@ -48,15 +72,27 @@ export function TextAreaCard({ title, subtitle, icon: Icon, placeholder, default
             {title}
           </Text>
         </HStack>
-        {subtitle && (
-          <Text fontSize="xs" color={subtitleColor}>
-            {subtitle}
-          </Text>
-        )}
+        <HStack spacing={2}>
+          {subtitle && (
+            <Text fontSize="xs" color={subtitleColor}>
+              {subtitle}
+            </Text>
+          )}
+          {showMic && onMicToggle && (
+            <MicButton
+              isListening={isMicListening}
+              onClick={onMicToggle}
+              isSupported={isMicSupported}
+              size="sm"
+            />
+          )}
+        </HStack>
       </Flex>
       <Textarea
         placeholder={placeholder}
-        defaultValue={defaultValue}
+        {...(isControlled
+          ? { value, onChange: (e) => onChange?.(e.target.value) }
+          : { defaultValue })}
         rows={rows}
         resize="none"
         w="full"
@@ -67,6 +103,7 @@ export function TextAreaCard({ title, subtitle, icon: Icon, placeholder, default
         bg={inputBg}
         color={inputColor}
         fontSize="sm"
+        readOnly={readOnly}
         _focus={{
           ring: '2px',
           ringColor: 'rgba(0,39,82,0.2)',

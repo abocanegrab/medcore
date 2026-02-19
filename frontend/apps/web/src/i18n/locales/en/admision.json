@@ -8,6 +8,9 @@
   "registerNewPatient": "Register New Patient",
   "todaysRegistrations": "Today's Registrations",
   "allPatientsProcessed": "All patients processed today",
+  "searchPlaceholder": "Search patients...",
+  "noPatients": "No patients registered today",
+  "patientRegistered": "Patient registered successfully",
   "table": {
     "patient": "Patient",
     "id": "ID",
@@ -15,5 +18,14 @@
     "registered": "Registered",
     "status": "Status",
     "priority": "Priority"
+  },
+  "form": {
+    "fullName": "Full Name",
+    "age": "Age",
+    "gender": "Gender",
+    "phone": "Phone",
+    "documentId": "Document ID (DNI)",
+    "serviceType": "Service Type",
+    "registerAndPay": "Register & Generate Receipt"
   }
 }

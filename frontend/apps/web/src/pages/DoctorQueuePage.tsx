@@ -1,41 +1,47 @@
-import {
-  Box,
-  SimpleGrid,
-  Text,
-  Flex,
-  HStack,
-  Button,
-  useColorModeValue,
-} from '@chakra-ui/react'
+import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react'
 import { useOutletContext, useNavigate } from 'react-router-dom'
-import {
-  LuStethoscope,
-  LuUsers,
-  LuArrowRight,
-  LuThermometer,
-  LuHeartPulse,
-} from 'react-icons/lu'
-import { Header } from '@medcore/ui'
+import { LuStethoscope, LuArrowRight } from 'react-icons/lu'
+import { Header, PatientTable } from '@medcore/ui'
+import type { PatientTableRow } from '@medcore/ui'
 import { useTranslation } from 'react-i18next'
 import { usePatientQueue } from '../contexts/PatientQueueContext'
+import { useAppointments } from '../contexts/AppointmentContext'
+import { useTTS } from '../hooks'
+
+function patientsToRows(patients: any[]): PatientTableRow[] {
+  return patients.map((p, idx) => ({
+    id: p.id,
+    order: idx + 1,
+    appointmentTime: p.appointmentTime || p.registeredAt,
+    name: p.name,
+    initials: p.initials,
+    age: p.age,
+    gender: p.gender,
+    serviceType: p.serviceType,
+    patientId: p.patientId,
+    registeredAt: p.registeredAt,
+    priority: p.priority,
+  }))
+}
 
 export default function DoctorQueuePage() {
   const { t } = useTranslation(['consultation', 'common', 'ui'])
   const navigate = useNavigate()
-  const { onMenuOpen, currentUser } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any }>()
+  const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { getPatientsByStatus, updatePatientStatus } = usePatientQueue()
+  const { speak } = useTTS()
 
   const triagedPatients = getPatientsByStatus('triaged')
-
-  const cardBg = useColorModeValue('white', 'card.dark')
-  const cardBorder = useColorModeValue('gray.100', 'gray.800')
-  const nameColor = useColorModeValue('primary.500', 'white')
-  const vitalBg = useColorModeValue('gray.50', 'gray.800')
-  const vitalLabel = useColorModeValue('gray.400', 'gray.500')
+  const registeredPatients = getPatientsByStatus('registered')
+  const allScheduled = getPatientsByStatus('registered', 'triaged', 'in_triage')
 
   const handleBeginConsultation = (patientId: string) => {
     updatePatientStatus(patientId, 'in_consultation')
     navigate(`/consultation/${patientId}`)
+  }
+
+  const handleSpeaker = (name: string) => {
+    speak(`Paciente ${name}, por favor pasar al consultorio`)
   }
 
   return (
@@ -49,6 +55,7 @@ export default function DoctorQueuePage() {
         badge={triagedPatients.length > 0 ? { label: `${triagedPatients.length} ${t('ui:ready')}`, color: 'primary' } : undefined}
         onMenuClick={onMenuOpen}
         currentUser={currentUser}
+        onLogout={onLogout}
       />
 
       <Box
@@ -62,169 +69,63 @@ export default function DoctorQueuePage() {
         flexDir="column"
         gap={6}
       >
-        {/* Stats */}
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-          <Box bg={cardBg} borderRadius="2xl" p={5} border="1px solid" borderColor={cardBorder} shadow="soft">
-            <HStack spacing={3}>
-              <Flex w={10} h={10} borderRadius="xl" bg="primary.50" align="center" justify="center" color="primary.500">
-                <LuUsers size={20} />
-              </Flex>
-              <Box>
-                <Text fontSize="2xl" fontWeight="bold" fontFamily="heading" color={nameColor}>
-                  {triagedPatients.length}
-                </Text>
-                <Text fontSize="xs" color="gray.500">{t('consultation:queue.patientsReady')}</Text>
-              </Box>
-            </HStack>
-          </Box>
-          <Box bg={cardBg} borderRadius="2xl" p={5} border="1px solid" borderColor={cardBorder} shadow="soft">
-            <HStack spacing={3}>
-              <Flex w={10} h={10} borderRadius="xl" bg="green.50" align="center" justify="center" color="green.500">
-                <LuStethoscope size={20} />
-              </Flex>
-              <Box>
-                <Text fontSize="2xl" fontWeight="bold" fontFamily="heading" color={nameColor}>
-                  {t('consultation:queue.today')}
-                </Text>
-                <Text fontSize="xs" color="gray.500">{t('consultation:queue.triagedAwaiting')}</Text>
-              </Box>
-            </HStack>
-          </Box>
-        </SimpleGrid>
+        <Tabs variant="soft-rounded" colorScheme="blue" size="sm">
+          <TabList gap={2} flexWrap="wrap">
+            <Tab borderRadius="xl" fontWeight="semibold" fontSize="sm">
+              {t('consultation:queue.scheduledTab', 'Citados')} ({allScheduled.length})
+            </Tab>
+            <Tab borderRadius="xl" fontWeight="semibold" fontSize="sm">
+              {t('consultation:queue.registeredTab', 'Registrados')} ({registeredPatients.length})
+            </Tab>
+            <Tab borderRadius="xl" fontWeight="semibold" fontSize="sm">
+              {t('consultation:queue.triagedTab', 'Triados')} ({triagedPatients.length})
+            </Tab>
+          </TabList>
 
-        {/* Section title */}
-        <HStack spacing={3}>
-          <Flex w={10} h={10} borderRadius="xl" bg="primary.50" align="center" justify="center" color="primary.500">
-            <LuStethoscope size={20} />
-          </Flex>
-          <Box>
-            <Text fontSize="lg" fontWeight="bold" fontFamily="heading" color={nameColor}>
-              {t('consultation:queue.triagedPatients')}
-            </Text>
-            <Text fontSize="xs" color="gray.500">{t('consultation:queue.patientsWithCompletedTriage')}</Text>
-          </Box>
-        </HStack>
-
-        {/* Patient cards */}
-        {triagedPatients.length === 0 ? (
-          <Box bg={cardBg} borderRadius="2xl" p={8} border="1px solid" borderColor={cardBorder} shadow="soft" textAlign="center">
-            <Text fontSize="lg" fontWeight="semibold" color="gray.400">{t('consultation:queue.noPatientsWaiting')}</Text>
-            <Text fontSize="sm" color="gray.400" mt={1}>{t('consultation:queue.allSeen')}</Text>
-          </Box>
-        ) : (
-          <SimpleGrid columns={{ base: 1 }} spacing={4}>
-            {triagedPatients.map((p) => (
-              <Box
-                key={p.id}
-                bg={cardBg}
-                borderRadius="2xl"
-                p={5}
-                border="1px solid"
-                borderColor={cardBorder}
-                shadow="soft"
-                _hover={{ shadow: 'md', borderColor: 'primary.200' }}
-                transition="all 0.2s"
-              >
-                <Flex
-                  align={{ base: 'stretch', md: 'start' }}
-                  justify="space-between"
-                  flexDir={{ base: 'column', md: 'row' }}
-                  gap={4}
-                >
-                  {/* Patient info */}
-                  <HStack spacing={4} flex={1} align="start">
-                    <Flex
-                      w={12}
-                      h={12}
-                      borderRadius="xl"
-                      bg="primary.50"
-                      color="primary.500"
-                      align="center"
-                      justify="center"
-                      fontSize="md"
-                      fontWeight="bold"
-                      fontFamily="heading"
-                      flexShrink={0}
-                    >
-                      {p.initials}
-                    </Flex>
-                    <Box flex={1}>
-                      <HStack spacing={2} mb={1}>
-                        <Text fontSize="md" fontWeight="bold" color={nameColor}>
-                          {p.name}
-                        </Text>
-                        <Text
-                          fontSize="xs"
-                          fontWeight="semibold"
-                          px={2}
-                          py={0.5}
-                          borderRadius="full"
-                          bg={p.priority === 'high' ? 'orange.100' : p.priority === 'urgent' ? 'red.100' : 'blue.100'}
-                          color={p.priority === 'high' ? 'orange.700' : p.priority === 'urgent' ? 'red.700' : 'blue.700'}
-                          textTransform="uppercase"
-                        >
-                          {p.priority}
-                        </Text>
-                      </HStack>
-                      <HStack spacing={4} fontSize="xs" color="gray.500" mb={3}>
-                        <Text>{p.patientId}</Text>
-                        <Text>{p.age}y / {p.gender}</Text>
-                      </HStack>
-
-                      {/* Vitals preview */}
-                      {p.vitals && (
-                        <HStack spacing={3} flexWrap="wrap">
-                          <HStack spacing={1} bg={vitalBg} px={2} py={1} borderRadius="lg">
-                            <LuThermometer size={14} color="var(--chakra-colors-gray-400)" />
-                            <Text fontSize="xs" fontWeight="medium">{p.vitals.temperature}°C</Text>
-                          </HStack>
-                          <HStack spacing={1} bg={vitalBg} px={2} py={1} borderRadius="lg">
-                            <LuHeartPulse size={14} color="var(--chakra-colors-gray-400)" />
-                            <Text fontSize="xs" fontWeight="medium">{p.vitals.bloodPressure} mmHg</Text>
-                          </HStack>
-                          <HStack spacing={1} bg={vitalBg} px={2} py={1} borderRadius="lg">
-                            <Text fontSize="xs" color={vitalLabel}>{t('common:vitals.weight')}:</Text>
-                            <Text fontSize="xs" fontWeight="medium">{p.vitals.weight} kg</Text>
-                          </HStack>
-                          <HStack spacing={1} bg={vitalBg} px={2} py={1} borderRadius="lg">
-                            <Text fontSize="xs" color={vitalLabel}>{t('common:vitals.height')}:</Text>
-                            <Text fontSize="xs" fontWeight="medium">{p.vitals.height} cm</Text>
-                          </HStack>
-                        </HStack>
-                      )}
-
-                      {/* Triage observations snippet */}
-                      {p.triageObservations && (
-                        <Text fontSize="xs" color="gray.500" mt={2} noOfLines={2} fontStyle="italic">
-                          {p.triageObservations}
-                        </Text>
-                      )}
-                    </Box>
-                  </HStack>
-
-                  {/* Action */}
-                  <Button
-                    rightIcon={<LuArrowRight size={16} />}
-                    bg="primary.500"
-                    color="white"
-                    borderRadius="xl"
-                    px={6}
-                    size="sm"
-                    fontWeight="semibold"
-                    _hover={{ bg: 'primary.400', transform: 'translateY(-1px)' }}
-                    transition="all 0.2s"
-                    shadow="md"
-                    onClick={() => handleBeginConsultation(p.id)}
-                    flexShrink={0}
-                    alignSelf={{ base: 'stretch', md: 'start' }}
-                  >
-                    {t('consultation:queue.beginConsultation')}
-                  </Button>
-                </Flex>
-              </Box>
-            ))}
-          </SimpleGrid>
-        )}
+          <TabPanels mt={4}>
+            <TabPanel p={0}>
+              <PatientTable
+                rows={patientsToRows(allScheduled)}
+                title={t('consultation:queue.allScheduledTitle', 'All Scheduled Patients')}
+                subtitle={t('consultation:queue.allScheduledSub', 'Registered and triaged patients for today')}
+                icon={LuStethoscope}
+                showSpeakerColumn
+                onSpeakerClick={handleSpeaker}
+                emptyMessage={t('consultation:queue.noPatientsWaiting')}
+                emptySubMessage={t('consultation:queue.allSeen')}
+              />
+            </TabPanel>
+            <TabPanel p={0}>
+              <PatientTable
+                rows={patientsToRows(registeredPatients)}
+                title={t('consultation:queue.registeredTitle', 'Registered Patients')}
+                subtitle={t('consultation:queue.registeredSub', 'Patients not yet triaged')}
+                icon={LuStethoscope}
+                showSpeakerColumn
+                onSpeakerClick={handleSpeaker}
+                emptyMessage={t('consultation:queue.noRegistered', 'No registered patients')}
+              />
+            </TabPanel>
+            <TabPanel p={0}>
+              <PatientTable
+                rows={patientsToRows(triagedPatients)}
+                title={t('consultation:queue.triagedPatients')}
+                subtitle={t('consultation:queue.patientsWithCompletedTriage')}
+                icon={LuStethoscope}
+                showSpeakerColumn
+                onSpeakerClick={handleSpeaker}
+                emptyMessage={t('consultation:queue.noPatientsWaiting')}
+                emptySubMessage={t('consultation:queue.allSeen')}
+                actionColumn={{
+                  label: t('consultation:queue.beginConsultation'),
+                  icon: LuArrowRight,
+                  onClick: handleBeginConsultation,
+                  colorScheme: 'blue',
+                }}
+              />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Box>
     </Box>
   )

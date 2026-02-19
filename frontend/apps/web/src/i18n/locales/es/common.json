@@ -23,10 +23,40 @@
   },
   "actions": {
     "saveDraft": "Guardar Borrador",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "close": "Cerrar",
+    "search": "Buscar",
+    "add": "Agregar",
+    "remove": "Eliminar",
+    "edit": "Editar"
   },
   "notFound": "Paciente no encontrado",
   "noData": "Sin datos disponibles",
   "years": "Anios",
-  "registered": "Registrado"
+  "registered": "Registrado",
+  "patientType": {
+    "N": "Nuevo",
+    "C": "Continuador",
+    "R": "Reingreso"
+  },
+  "diagnosisType": {
+    "definitivo": "Definitivo",
+    "presuntivo": "Presuntivo",
+    "repetitivo": "Repetitivo"
+  },
+  "medicationRoute": {
+    "oral": "Oral",
+    "IV": "IV",
+    "IM": "IM",
+    "topical": "Topica",
+    "sublingual": "Sublingual",
+    "inhalation": "Inhalacion"
+  },
+  "timeUnits": {
+    "minutes": "Minutos",
+    "hours": "Horas",
+    "days": "Dias",
+    "weeks": "Semanas"
+  }
 }

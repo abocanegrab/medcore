@@ -15,8 +15,10 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  MenuDivider,
+  VStack,
 } from '@chakra-ui/react'
-import { LuSearch, LuBell, LuMenu, LuMoon, LuSun, LuChevronRight, LuChevronDown, LuGlobe } from 'react-icons/lu'
+import { LuSearch, LuBell, LuMenu, LuMoon, LuSun, LuChevronRight, LuChevronDown, LuGlobe, LuUser, LuSettings, LuLogOut } from 'react-icons/lu'
 import { useTranslation } from 'react-i18next'
 
 interface BreadcrumbItem {
@@ -32,9 +34,10 @@ interface HeaderProps {
   showSearch?: boolean
   onMenuClick?: () => void
   currentUser?: { name: string; initials: string; department: string }
+  onLogout?: () => void
 }
 
-export function Header({ title, breadcrumbItems, badge, showSearch = true, onMenuClick, currentUser }: HeaderProps) {
+export function Header({ title, breadcrumbItems, badge, showSearch = true, onMenuClick, currentUser, onLogout }: HeaderProps) {
   const { t, i18n } = useTranslation(['ui', 'nav'])
   const bg = useColorModeValue('white', 'card.dark')
   const borderColor = useColorModeValue('gray.100', 'gray.800')
@@ -243,64 +246,228 @@ export function Header({ title, breadcrumbItems, badge, showSearch = true, onMen
             />
           </Box>
 
-          {/* User profile chip */}
-          <HStack
-            spacing={3}
-            bg={useColorModeValue('gray.50', 'gray.800')}
-            pl={1.5}
-            pr={4}
-            py={1.5}
-            borderRadius="full"
-            border="1px solid"
-            borderColor={useColorModeValue('gray.200', 'gray.700')}
-            cursor="pointer"
-            transition="all 0.2s"
-          >
-            <Box position="relative">
-              <Flex
-                w={8}
-                h={8}
+          {/* User profile menu */}
+          <Menu placement="bottom-end">
+            <MenuButton>
+              <HStack
+                spacing={3}
+                bg={useColorModeValue('gray.50', 'gray.800')}
+                pl={1.5}
+                pr={4}
+                py={1.5}
                 borderRadius="full"
-                bg="primary.500"
-                color="white"
-                align="center"
-                justify="center"
-                fontSize="xs"
-                fontWeight="bold"
                 border="1px solid"
-                borderColor={useColorModeValue('gray.100', 'gray.700')}
+                borderColor={useColorModeValue('gray.200', 'gray.700')}
+                cursor="pointer"
+                transition="all 0.2s"
+                _hover={{
+                  shadow: 'md',
+                  borderColor: useColorModeValue('gray.300', 'gray.600'),
+                }}
               >
-                {userInitials}
-              </Flex>
+                <Box position="relative">
+                  <Flex
+                    w={8}
+                    h={8}
+                    borderRadius="full"
+                    bg="primary.500"
+                    color="white"
+                    align="center"
+                    justify="center"
+                    fontSize="xs"
+                    fontWeight="bold"
+                    border="1px solid"
+                    borderColor={useColorModeValue('gray.100', 'gray.700')}
+                  >
+                    {userInitials}
+                  </Flex>
+                  <Box
+                    position="absolute"
+                    bottom={0}
+                    right={0}
+                    w={2}
+                    h={2}
+                    bg="green.500"
+                    borderRadius="full"
+                    border="2px solid"
+                    borderColor={useColorModeValue('white', 'gray.800')}
+                  />
+                </Box>
+                <Show above="md">
+                  <Box mr={1}>
+                    <Text
+                      fontSize="xs"
+                      fontWeight="bold"
+                      color={titleColor}
+                      lineHeight="tight"
+                      textAlign="left"
+                    >
+                      {userName}
+                    </Text>
+                    <Text fontSize="10px" color="gray.500" fontWeight="medium" textAlign="left">
+                      {userDept.includes(':') ? t(userDept) : userDept}
+                    </Text>
+                  </Box>
+                  <LuChevronDown size={14} color="var(--chakra-colors-gray-400)" />
+                </Show>
+              </HStack>
+            </MenuButton>
+            <MenuList
+              minW="260px"
+              borderRadius="2xl"
+              shadow="soft"
+              border="1px solid"
+              borderColor={useColorModeValue('gray.100', 'gray.800')}
+              bg={useColorModeValue('white', 'card.dark')}
+              py={0}
+              overflow="hidden"
+            >
+              {/* User info header */}
               <Box
-                position="absolute"
-                bottom={0}
-                right={0}
-                w={2}
-                h={2}
-                bg="green.500"
-                borderRadius="full"
-                border="2px solid"
-                borderColor={useColorModeValue('white', 'gray.800')}
-              />
-            </Box>
-            <Show above="md">
-              <Box mr={1}>
-                <Text
-                  fontSize="xs"
-                  fontWeight="bold"
-                  color={titleColor}
-                  lineHeight="tight"
-                >
-                  {userName}
-                </Text>
-                <Text fontSize="10px" color="gray.500" fontWeight="medium">
-                  {userDept.includes(':') ? t(userDept) : userDept}
-                </Text>
+                px={4}
+                pt={4}
+                pb={3}
+                bg={useColorModeValue('rgba(0,39,82,0.03)', 'rgba(0,39,82,0.15)')}
+              >
+                <HStack spacing={3}>
+                  <Flex
+                    w={10}
+                    h={10}
+                    borderRadius="full"
+                    bg="primary.500"
+                    color="white"
+                    align="center"
+                    justify="center"
+                    fontSize="sm"
+                    fontWeight="bold"
+                    shadow="glow"
+                    flexShrink={0}
+                  >
+                    {userInitials}
+                  </Flex>
+                  <VStack spacing={0} align="start">
+                    <Text
+                      fontSize="sm"
+                      fontWeight="bold"
+                      color={useColorModeValue('primary.500', 'white')}
+                      lineHeight="tight"
+                    >
+                      {userName}
+                    </Text>
+                    <Text fontSize="xs" color="gray.500" fontWeight="medium">
+                      {userDept.includes(':') ? t(userDept) : userDept}
+                    </Text>
+                  </VStack>
+                </HStack>
+                <HStack mt={2.5} spacing={1.5}>
+                  <Box w={1.5} h={1.5} borderRadius="full" bg="green.400" />
+                  <Text fontSize="2xs" color="green.500" fontWeight="semibold">
+                    {t('ui:header.online')}
+                  </Text>
+                </HStack>
               </Box>
-              <LuChevronDown size={14} color="var(--chakra-colors-gray-400)" />
-            </Show>
-          </HStack>
+
+              <MenuDivider my={0} borderColor={useColorModeValue('gray.100', 'gray.700')} />
+
+              {/* Menu items */}
+              <Box py={1.5} px={1.5}>
+                <MenuItem
+                  borderRadius="xl"
+                  py={2.5}
+                  px={3}
+                  fontSize="sm"
+                  fontWeight="medium"
+                  color={useColorModeValue('gray.600', 'gray.300')}
+                  _hover={{
+                    bg: useColorModeValue('rgba(0,39,82,0.05)', 'rgba(0,39,82,0.15)'),
+                    color: useColorModeValue('primary.500', 'white'),
+                  }}
+                  transition="all 0.2s"
+                  icon={
+                    <Flex
+                      w={8}
+                      h={8}
+                      borderRadius="lg"
+                      bg={useColorModeValue('rgba(0,39,82,0.06)', 'rgba(0,39,82,0.2)')}
+                      align="center"
+                      justify="center"
+                      color={useColorModeValue('primary.400', 'primary.300')}
+                      flexShrink={0}
+                    >
+                      <LuUser size={16} />
+                    </Flex>
+                  }
+                >
+                  {t('nav:profile')}
+                </MenuItem>
+                <MenuItem
+                  borderRadius="xl"
+                  py={2.5}
+                  px={3}
+                  fontSize="sm"
+                  fontWeight="medium"
+                  color={useColorModeValue('gray.600', 'gray.300')}
+                  _hover={{
+                    bg: useColorModeValue('rgba(0,39,82,0.05)', 'rgba(0,39,82,0.15)'),
+                    color: useColorModeValue('primary.500', 'white'),
+                  }}
+                  transition="all 0.2s"
+                  icon={
+                    <Flex
+                      w={8}
+                      h={8}
+                      borderRadius="lg"
+                      bg={useColorModeValue('rgba(0,39,82,0.06)', 'rgba(0,39,82,0.2)')}
+                      align="center"
+                      justify="center"
+                      color={useColorModeValue('primary.400', 'primary.300')}
+                      flexShrink={0}
+                    >
+                      <LuSettings size={16} />
+                    </Flex>
+                  }
+                >
+                  {t('nav:settings')}
+                </MenuItem>
+              </Box>
+
+              <MenuDivider my={0} borderColor={useColorModeValue('gray.100', 'gray.700')} />
+
+              {/* Logout */}
+              <Box py={1.5} px={1.5}>
+                <MenuItem
+                  borderRadius="xl"
+                  py={2.5}
+                  px={3}
+                  fontSize="sm"
+                  fontWeight="medium"
+                  color={useColorModeValue('red.500', 'red.400')}
+                  _hover={{
+                    bg: useColorModeValue('red.50', 'rgba(185,28,28,0.15)'),
+                    color: useColorModeValue('red.600', 'red.300'),
+                  }}
+                  transition="all 0.2s"
+                  onClick={onLogout}
+                  icon={
+                    <Flex
+                      w={8}
+                      h={8}
+                      borderRadius="lg"
+                      bg={useColorModeValue('red.50', 'rgba(185,28,28,0.15)')}
+                      align="center"
+                      justify="center"
+                      color={useColorModeValue('red.400', 'red.400')}
+                      flexShrink={0}
+                    >
+                      <LuLogOut size={16} />
+                    </Flex>
+                  }
+                >
+                  {t('nav:logOut')}
+                </MenuItem>
+              </Box>
+            </MenuList>
+          </Menu>
         </HStack>
       </Flex>
     </Box>

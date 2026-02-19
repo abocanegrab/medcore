@@ -1,17 +1,20 @@
 {
   "dashboard": "Dashboard",
   "admision": "Admision",
+  "citas": "Appointments",
   "triaje": "Triaje",
   "consultas": "Consultas",
   "farmacia": "Farmacia",
   "subOptions": {
     "queue": "Queue",
     "register": "Register",
+    "schedule": "Schedule",
     "incomingPatients": "Incoming Patients",
     "patientQueue": "Patient Queue",
     "prescriptions": "Prescriptions"
   },
   "options": "Options",
+  "profile": "My Profile",
   "settings": "Settings",
   "logOut": "Log out",
   "systemStatus": "System Status",

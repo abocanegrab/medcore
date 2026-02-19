@@ -306,7 +306,7 @@ function DoctorDashboard() {
 
 export default function DashboardPage() {
   const { t } = useTranslation(['dashboard'])
-  const { onMenuOpen, currentUser } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any }>()
+  const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { currentUser: authUser } = useAuth()
   const role = authUser?.role ?? 'doctor'
 
@@ -327,6 +327,7 @@ export default function DashboardPage() {
         ]}
         onMenuClick={onMenuOpen}
         currentUser={currentUser}
+        onLogout={onLogout}
       />
 
       <Box

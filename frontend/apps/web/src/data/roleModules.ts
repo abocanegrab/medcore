@@ -4,6 +4,7 @@ import {
   LuClipboardPlus,
   LuStethoscope,
   LuPill,
+  LuCalendar,
 } from 'react-icons/lu'
 import type { IconType } from 'react-icons'
 import type { UserRole } from './mockUsers'
@@ -28,6 +29,15 @@ const allModules: SidebarModule[] = [
     icon: LuLayoutDashboard,
     label: 'nav:dashboard',
     path: '/dashboard',
+  },
+  {
+    id: 'citas',
+    icon: LuCalendar,
+    label: 'nav:citas',
+    path: '/citas',
+    subOptions: [
+      { label: 'nav:subOptions.schedule', path: '/citas' },
+    ],
   },
   {
     id: 'admision',
@@ -69,7 +79,7 @@ const allModules: SidebarModule[] = [
 ]
 
 const roleModuleMap: Record<UserRole, string[]> = {
-  recepcion: ['dashboard', 'admision'],
+  recepcion: ['dashboard', 'citas', 'admision'],
   triaje: ['dashboard', 'triaje'],
   doctor: ['dashboard', 'consultas'],
   farmacia: ['dashboard', 'farmacia'],

@@ -2,6 +2,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AppShell } from '@medcore/ui'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { PatientQueueProvider } from './contexts/PatientQueueContext'
+import { AppointmentProvider } from './contexts/AppointmentContext'
 import { getModulesForRole } from './data/roleModules'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
@@ -11,6 +12,7 @@ import TriajeQueuePage from './pages/TriajeQueuePage'
 import DoctorQueuePage from './pages/DoctorQueuePage'
 import AdmisionPage from './pages/AdmisionPage'
 import FarmaciaPage from './pages/FarmaciaPage'
+import AppointmentsPage from './pages/AppointmentsPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { currentUser } = useAuth()
@@ -50,6 +52,7 @@ function AppRoutes() {
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="admision" element={<AdmisionPage />} />
+        <Route path="citas" element={<AppointmentsPage />} />
         <Route path="triaje" element={<TriajeQueuePage />} />
         <Route path="triaje/:id" element={<TriajePage />} />
         <Route path="consultation" element={<DoctorQueuePage />} />
@@ -65,7 +68,9 @@ export default function App() {
   return (
     <AuthProvider>
       <PatientQueueProvider>
-        <AppRoutes />
+        <AppointmentProvider>
+          <AppRoutes />
+        </AppointmentProvider>
       </PatientQueueProvider>
     </AuthProvider>
   )

@@ -1,0 +1,37 @@
+{
+  "title": "Appointments",
+  "weeklySchedule": "Weekly Schedule",
+  "newAppointment": "New Appointment",
+  "appointmentDetail": "Appointment Detail",
+  "status": {
+    "scheduled": "Scheduled",
+    "confirmed": "Confirmed",
+    "arrived": "Arrived",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "form": {
+    "patient": "Patient",
+    "doctor": "Doctor",
+    "date": "Date",
+    "time": "Time",
+    "service": "Service",
+    "source": "Source",
+    "reason": "Reason",
+    "save": "Save Appointment"
+  },
+  "sources": {
+    "web": "Web",
+    "phone": "Phone",
+    "whatsapp": "WhatsApp",
+    "callcenter": "Call Center"
+  },
+  "actions": {
+    "confirm": "Confirm",
+    "arrived": "Arrived",
+    "cancel": "Cancel Appointment"
+  },
+  "created": "Appointment created successfully",
+  "today": "Today"
+}

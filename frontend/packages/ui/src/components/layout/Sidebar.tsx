@@ -14,8 +14,6 @@ import {
   Collapse,
 } from '@chakra-ui/react'
 import {
-  LuSettings,
-  LuLogOut,
   LuCross,
   LuChevronRight,
 } from 'react-icons/lu'
@@ -107,11 +105,6 @@ function DesktopSidebar({
     },
     [onNavigate],
   )
-
-  const handleLogout = () => {
-    if (onLogout) onLogout()
-    onNavigate('/login')
-  }
 
   return (
     <>
@@ -209,26 +202,7 @@ function DesktopSidebar({
             })}
           </VStack>
 
-          {/* Logout at bottom */}
-          <Box mt="auto" mb={4}>
-            <Flex
-              as="button"
-              w={10}
-              h={10}
-              borderRadius="full"
-              align="center"
-              justify="center"
-              border="2px solid"
-              borderColor={useColorModeValue('white', 'gray.700')}
-              shadow="sm"
-              color="gray.400"
-              _hover={{ transform: 'scale(1.1)' }}
-              transition="transform 0.2s"
-              onClick={handleLogout}
-            >
-              <LuLogOut size={18} />
-            </Flex>
-          </Box>
+          <Box mt="auto" mb={4} />
         </Flex>
 
         {/* Expanded panel */}
@@ -395,11 +369,6 @@ function MobileSidebar({
     }
   }
 
-  const handleLogout = () => {
-    if (onLogout) onLogout()
-    onNavigate('/login')
-    onClose()
-  }
 
   return (
     <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
@@ -490,16 +459,6 @@ function MobileSidebar({
               )
             })}
           </VStack>
-          <Box mt={8}>
-            <HStack as="button" p={3} borderRadius="xl" color="gray.400" spacing={3}>
-              <LuSettings size={20} />
-              <Text fontSize="sm">{t('nav:settings')}</Text>
-            </HStack>
-            <HStack as="button" p={3} borderRadius="xl" color="gray.400" spacing={3} onClick={handleLogout}>
-              <LuLogOut size={20} />
-              <Text fontSize="sm">{t('nav:logOut')}</Text>
-            </HStack>
-          </Box>
         </DrawerBody>
       </DrawerContent>
     </Drawer>

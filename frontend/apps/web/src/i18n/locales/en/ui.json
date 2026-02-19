@@ -3,7 +3,8 @@
     "searchPlaceholder": "Search patients, records...",
     "language": "Language",
     "english": "English",
-    "spanish": "Espanol"
+    "spanish": "Espanol",
+    "online": "Online"
   },
   "patientBanner": {
     "patientId": "Patient ID",
@@ -14,5 +15,26 @@
   },
   "waiting": "WAITING",
   "ready": "READY",
-  "pending": "PENDING"
+  "pending": "PENDING",
+  "table": {
+    "order": "#",
+    "appointmentTime": "Appt. Time",
+    "speaker": "Call",
+    "patient": "Patient",
+    "patientType": "Type",
+    "ageGender": "Age / Gender",
+    "service": "Service",
+    "diagnosis": "Diagnosis",
+    "account": "Account",
+    "action": "Action"
+  },
+  "pagination": {
+    "total": "{{count}} patients total",
+    "page": "Page {{current}} of {{total}}"
+  },
+  "filters": {
+    "allStatuses": "All statuses",
+    "allPriorities": "All priorities",
+    "search": "Search patients..."
+  }
 }

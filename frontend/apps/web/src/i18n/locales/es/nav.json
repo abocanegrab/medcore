@@ -1,17 +1,20 @@
 {
   "dashboard": "Panel",
   "admision": "Admision",
+  "citas": "Citas",
   "triaje": "Triaje",
   "consultas": "Consultas",
   "farmacia": "Farmacia",
   "subOptions": {
     "queue": "Cola",
     "register": "Registrar",
+    "schedule": "Agenda",
     "incomingPatients": "Pacientes Entrantes",
     "patientQueue": "Cola de Pacientes",
     "prescriptions": "Recetas"
   },
   "options": "Opciones",
+  "profile": "Mi Perfil",
   "settings": "Configuracion",
   "logOut": "Cerrar sesion",
   "systemStatus": "Estado del Sistema",

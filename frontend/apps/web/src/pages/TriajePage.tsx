@@ -116,7 +116,7 @@ export default function TriajePage() {
   const { t } = useTranslation(['triaje', 'common'])
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { onMenuOpen, currentUser } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any }>()
+  const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { getPatientById, updatePatientData } = usePatientQueue()
 
   const patient = id ? getPatientById(id) : undefined
@@ -166,6 +166,7 @@ export default function TriajePage() {
         showSearch={false}
         onMenuClick={onMenuOpen}
         currentUser={currentUser}
+        onLogout={onLogout}
       />
 
       <Box

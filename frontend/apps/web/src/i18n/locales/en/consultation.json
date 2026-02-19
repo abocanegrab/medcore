@@ -8,7 +8,15 @@
     "noPatientsWaiting": "No patients waiting",
     "allSeen": "All triaged patients have been seen",
     "beginConsultation": "Begin Consultation",
-    "today": "Today"
+    "today": "Today",
+    "scheduledTab": "Scheduled",
+    "registeredTab": "Registered",
+    "triagedTab": "Triaged",
+    "allScheduledTitle": "All Scheduled Patients",
+    "allScheduledSub": "Registered and triaged patients for today",
+    "registeredTitle": "Registered Patients",
+    "registeredSub": "Patients not yet triaged",
+    "noRegistered": "No registered patients"
   },
   "form": {
     "title": "Patient Consultation",
@@ -28,6 +36,38 @@
     "diagnosis": "Diagnosis",
     "treatment": "Treatment",
     "labOrders": "Lab Orders",
-    "finishConsultation": "Finish Consultation"
+    "finishConsultation": "Finish Consultation",
+    "signAndFinish": "Sign & Finish",
+    "clinicalExam": "Clinical Exam",
+    "clinicalExamSubtitle": "Physical examination findings",
+    "mainSymptom": "Main Symptom",
+    "illnessDuration": "Illness Duration",
+    "patientTypeEstablishment": "Patient Type (Establishment)",
+    "patientTypeService": "Patient Type (Service)",
+    "notes": "Medical Notes",
+    "rest": "Rest Certificate"
+  },
+  "wizard": {
+    "anamnesis": "Anamnesis",
+    "diagnosis": "Diagnosis",
+    "lab": "Lab",
+    "imaging": "Imaging",
+    "treatment": "Treatment",
+    "notes": "Notes",
+    "rest": "Rest"
+  },
+  "orders": {
+    "labOrders": "Lab Orders",
+    "imagingOrders": "Imaging Orders",
+    "pharmacyOrders": "Pharmacy Orders",
+    "confirmAndSend": "Confirm & Send Orders",
+    "nextDestination": "Patient's next destination",
+    "generatedOrders": "Generated Orders"
+  },
+  "signing": {
+    "signingDocument": "Signing document...",
+    "biometricVerification": "RENIEC biometric verification in progress",
+    "documentSigned": "Document signed",
+    "signatureId": "Signature ID"
   }
 }
