@@ -2,7 +2,7 @@ import { Box, useColorModeValue } from '@chakra-ui/react'
 import type { BoxProps } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 
-const MotionBox = motion.create(Box)
+const MotionBox = motion.create(Box) as any
 
 export function BentoCard({ children, ...props }: BoxProps) {
   const bg = useColorModeValue('white', 'card.dark')

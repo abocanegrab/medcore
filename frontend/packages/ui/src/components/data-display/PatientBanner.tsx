@@ -86,8 +86,8 @@ export function PatientBanner({ name, age, gender, patientId, vitals }: PatientB
       shadow="deep"
       display="flex"
       flexDir={{ base: 'column', md: 'row' }}
-      justify="space-between"
-      align="center"
+      justifyContent="space-between"
+      alignItems="center"
       gap={8}
       position="relative"
       overflow="hidden"
