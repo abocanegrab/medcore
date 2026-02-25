@@ -8,7 +8,7 @@ import { usePatientQueue } from '../contexts/PatientQueueContext'
 import { useTTS } from '../hooks'
 
 export default function FarmaciaPage() {
-  const { t } = useTranslation(['farmacia', 'ui'])
+  const { t } = useTranslation(['farmacia', 'ui', 'nav'])
   const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { getPatientsByStatus, updatePatientStatus } = usePatientQueue()
   const { speak } = useTTS()
@@ -42,8 +42,8 @@ export default function FarmaciaPage() {
       <Header
         title={t('farmacia:title')}
         breadcrumbItems={[
-          { label: 'MedCore' },
-          { label: 'Farmacia', isActive: true },
+          { label: t('nav:appName') },
+          { label: t('nav:farmacia'), isActive: true },
         ]}
         badge={pharmacyPatients.length > 0 ? { label: `${pharmacyPatients.length} ${t('ui:pending')}`, color: 'amber' } : undefined}
         onMenuClick={onMenuOpen}

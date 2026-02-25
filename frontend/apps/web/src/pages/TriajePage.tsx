@@ -113,7 +113,7 @@ function VitalCard({ icon: Icon, label, placeholder, unit, type = 'number', step
 }
 
 export default function TriajePage() {
-  const { t } = useTranslation(['triaje', 'common'])
+  const { t } = useTranslation(['triaje', 'common', 'nav'])
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
@@ -158,8 +158,8 @@ export default function TriajePage() {
       <Header
         title={t('triaje:form.title')}
         breadcrumbItems={[
-          { label: 'MedCore' },
-          { label: 'Triage' },
+          { label: t('nav:appName') },
+          { label: t('nav:triaje') },
           { label: patient.name, isActive: true },
         ]}
         badge={{ label: 'INTAKE', color: 'amber' }}

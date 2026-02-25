@@ -1,10 +1,11 @@
 {
+  "appName": "Centro Medico UPeU",
   "dashboard": "Dashboard",
   "admision": "Admision",
   "citas": "Appointments",
-  "triaje": "Triaje",
-  "consultas": "Consultas",
-  "farmacia": "Farmacia",
+  "triaje": "Triage",
+  "consultas": "Consultations",
+  "farmacia": "Pharmacy",
   "subOptions": {
     "queue": "Queue",
     "register": "Register",
@@ -16,7 +17,5 @@
   "options": "Options",
   "profile": "My Profile",
   "settings": "Settings",
-  "logOut": "Log out",
-  "systemStatus": "System Status",
-  "serverOptimal": "Server Optimal"
+  "logOut": "Log out"
 }

@@ -32,5 +32,8 @@ export { MicButton } from './components/forms/MicButton'
 // Feedback
 export { ActionBar } from './components/feedback/ActionBar'
 
+// Brand
+export { Logo } from './components/brand/Logo'
+
 // Theme
 export { theme } from './theme'

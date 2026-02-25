@@ -1,4 +1,5 @@
 {
+  "appName": "Centro Medico UPeU",
   "dashboard": "Panel",
   "admision": "Admision",
   "citas": "Citas",
@@ -16,7 +17,5 @@
   "options": "Opciones",
   "profile": "Mi Perfil",
   "settings": "Configuracion",
-  "logOut": "Cerrar sesion",
-  "systemStatus": "Estado del Sistema",
-  "serverOptimal": "Servidor Optimo"
+  "logOut": "Cerrar sesion"
 }

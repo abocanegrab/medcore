@@ -16,15 +16,16 @@ import {
 } from '@chakra-ui/react'
 import { motion } from 'framer-motion'
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu'
+import { useTranslation } from 'react-i18next'
 
 const MotionTr = motion.create(Tr)
 
 type StatusType = 'confirmed' | 'pending' | 'in-progress'
 
-const statusStyles: Record<StatusType, { bg: string; color: string; darkBg: string; darkColor: string; label: string }> = {
-  confirmed: { bg: 'green.100', color: 'green.800', darkBg: 'rgba(6,78,59,0.3)', darkColor: 'green.400', label: 'Confirmed' },
-  pending: { bg: 'orange.100', color: 'orange.800', darkBg: 'rgba(120,53,15,0.3)', darkColor: 'orange.400', label: 'Pending' },
-  'in-progress': { bg: 'blue.100', color: 'blue.800', darkBg: 'rgba(30,58,138,0.3)', darkColor: 'blue.400', label: 'In Progress' },
+const statusStyles: Record<StatusType, { bg: string; color: string; darkBg: string; darkColor: string; labelKey: string }> = {
+  confirmed: { bg: 'green.100', color: 'green.800', darkBg: 'rgba(6,78,59,0.3)', darkColor: 'green.400', labelKey: 'ui:schedule.confirmed' },
+  pending: { bg: 'orange.100', color: 'orange.800', darkBg: 'rgba(120,53,15,0.3)', darkColor: 'orange.400', labelKey: 'ui:schedule.pending' },
+  'in-progress': { bg: 'blue.100', color: 'blue.800', darkBg: 'rgba(30,58,138,0.3)', darkColor: 'blue.400', labelKey: 'ui:schedule.inProgress' },
 }
 
 interface ScheduleRow {
@@ -43,6 +44,7 @@ interface ScheduleTableProps {
 }
 
 export function ScheduleTable({ title, rows, onRowClick }: ScheduleTableProps) {
+  const { t } = useTranslation(['ui'])
   const glassBg = useColorModeValue('rgba(255,255,255,0.85)', 'rgba(22,30,39,0.7)')
   const glassBorder = useColorModeValue('rgba(255,255,255,0.8)', 'rgba(255,255,255,0.05)')
   const headerColor = useColorModeValue('gray.400', 'gray.500')
@@ -91,19 +93,19 @@ export function ScheduleTable({ title, rows, onRowClick }: ScheduleTableProps) {
           <Thead>
             <Tr borderBottom="1px solid" borderColor={rowBorder}>
               <Th color={headerColor} fontWeight="semibold" fontSize="xs" textTransform="uppercase" letterSpacing="wider" px={{ base: 2, md: 3 }} py={3}>
-                Time
+                {t('ui:schedule.time')}
               </Th>
               <Th color={headerColor} fontWeight="semibold" fontSize="xs" textTransform="uppercase" letterSpacing="wider" px={{ base: 2, md: 3 }} py={3}>
-                Patient
+                {t('ui:schedule.patient')}
               </Th>
               <Th color={headerColor} fontWeight="semibold" fontSize="xs" textTransform="uppercase" letterSpacing="wider" px={3} py={3} display={{ base: 'none', md: 'table-cell' }}>
-                Reason
+                {t('ui:schedule.reason')}
               </Th>
               <Th color={headerColor} fontWeight="semibold" fontSize="xs" textTransform="uppercase" letterSpacing="wider" px={{ base: 2, md: 3 }} py={3}>
-                Status
+                {t('ui:schedule.status')}
               </Th>
               <Th color={headerColor} fontWeight="semibold" fontSize="xs" textTransform="uppercase" letterSpacing="wider" px={3} py={3} textAlign="right" display={{ base: 'none', lg: 'table-cell' }}>
-                Action
+                {t('ui:schedule.action')}
               </Th>
             </Tr>
           </Thead>
@@ -168,7 +170,7 @@ export function ScheduleTable({ title, rows, onRowClick }: ScheduleTableProps) {
                       border="1px solid"
                       borderColor={useColorModeValue(status.bg, `${status.darkColor.split('.')[0]}.800`)}
                     >
-                      {status.label}
+                      {t(status.labelKey)}
                     </Text>
                   </Td>
                   <Td px={3} py={3.5} textAlign="right" display={{ base: 'none', lg: 'table-cell' }}>
@@ -182,7 +184,7 @@ export function ScheduleTable({ title, rows, onRowClick }: ScheduleTableProps) {
                       cursor="pointer"
                       _hover={{ color: 'red.800' }}
                     >
-                      Details
+                      {t('ui:schedule.details')}
                     </Text>
                   </Td>
                 </MotionTr>

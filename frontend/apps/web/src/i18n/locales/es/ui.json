@@ -28,6 +28,17 @@
     "account": "Cta-Cte",
     "action": "Accion"
   },
+  "schedule": {
+    "time": "Hora",
+    "patient": "Paciente",
+    "reason": "Motivo",
+    "status": "Estado",
+    "action": "Accion",
+    "details": "Detalle",
+    "confirmed": "Confirmado",
+    "pending": "Pendiente",
+    "inProgress": "En Progreso"
+  },
   "pagination": {
     "total": "{{count}} pacientes en total",
     "page": "Pagina {{current}} de {{total}}"

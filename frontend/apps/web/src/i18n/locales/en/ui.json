@@ -28,6 +28,17 @@
     "account": "Account",
     "action": "Action"
   },
+  "schedule": {
+    "time": "Time",
+    "patient": "Patient",
+    "reason": "Reason",
+    "status": "Status",
+    "action": "Action",
+    "details": "Details",
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "inProgress": "In Progress"
+  },
   "pagination": {
     "total": "{{count}} patients total",
     "page": "Page {{current}} of {{total}}"

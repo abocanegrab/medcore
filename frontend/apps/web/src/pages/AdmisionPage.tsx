@@ -15,7 +15,7 @@ import { useTTS } from '../hooks'
 import RegisterPatientModal from '../components/RegisterPatientModal'
 
 export default function AdmisionPage() {
-  const { t } = useTranslation(['admision', 'common'])
+  const { t } = useTranslation(['admision', 'common', 'nav'])
   const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { patients } = usePatientQueue()
   const { speak, isSpeaking } = useTTS()
@@ -49,8 +49,8 @@ export default function AdmisionPage() {
       <Header
         title={t('admision:title')}
         breadcrumbItems={[
-          { label: 'MedCore' },
-          { label: 'Admision', isActive: true },
+          { label: t('nav:appName') },
+          { label: t('nav:admision'), isActive: true },
         ]}
         onMenuClick={onMenuOpen}
         currentUser={currentUser}

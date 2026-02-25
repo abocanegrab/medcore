@@ -25,7 +25,7 @@ function patientsToRows(patients: any[]): PatientTableRow[] {
 }
 
 export default function DoctorQueuePage() {
-  const { t } = useTranslation(['consultation', 'common', 'ui'])
+  const { t } = useTranslation(['consultation', 'common', 'ui', 'nav'])
   const navigate = useNavigate()
   const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { getPatientsByStatus, updatePatientStatus } = usePatientQueue()
@@ -49,8 +49,8 @@ export default function DoctorQueuePage() {
       <Header
         title={t('consultation:queue.title')}
         breadcrumbItems={[
-          { label: 'MedCore' },
-          { label: 'Consultas', isActive: true },
+          { label: t('nav:appName') },
+          { label: t('nav:consultas'), isActive: true },
         ]}
         badge={triagedPatients.length > 0 ? { label: `${triagedPatients.length} ${t('ui:ready')}`, color: 'primary' } : undefined}
         onMenuClick={onMenuOpen}
@@ -72,13 +72,13 @@ export default function DoctorQueuePage() {
         <Tabs variant="soft-rounded" colorScheme="blue" size="sm">
           <TabList gap={2} flexWrap="wrap">
             <Tab borderRadius="xl" fontWeight="semibold" fontSize="sm">
-              {t('consultation:queue.scheduledTab', 'Citados')} ({allScheduled.length})
+              {t('consultation:queue.scheduledTab')} ({allScheduled.length})
             </Tab>
             <Tab borderRadius="xl" fontWeight="semibold" fontSize="sm">
-              {t('consultation:queue.registeredTab', 'Registrados')} ({registeredPatients.length})
+              {t('consultation:queue.registeredTab')} ({registeredPatients.length})
             </Tab>
             <Tab borderRadius="xl" fontWeight="semibold" fontSize="sm">
-              {t('consultation:queue.triagedTab', 'Triados')} ({triagedPatients.length})
+              {t('consultation:queue.triagedTab')} ({triagedPatients.length})
             </Tab>
           </TabList>
 
@@ -86,8 +86,8 @@ export default function DoctorQueuePage() {
             <TabPanel p={0}>
               <PatientTable
                 rows={patientsToRows(allScheduled)}
-                title={t('consultation:queue.allScheduledTitle', 'All Scheduled Patients')}
-                subtitle={t('consultation:queue.allScheduledSub', 'Registered and triaged patients for today')}
+                title={t('consultation:queue.allScheduledTitle')}
+                subtitle={t('consultation:queue.allScheduledSub')}
                 icon={LuStethoscope}
                 showSpeakerColumn
                 onSpeakerClick={handleSpeaker}
@@ -98,12 +98,12 @@ export default function DoctorQueuePage() {
             <TabPanel p={0}>
               <PatientTable
                 rows={patientsToRows(registeredPatients)}
-                title={t('consultation:queue.registeredTitle', 'Registered Patients')}
-                subtitle={t('consultation:queue.registeredSub', 'Patients not yet triaged')}
+                title={t('consultation:queue.registeredTitle')}
+                subtitle={t('consultation:queue.registeredSub')}
                 icon={LuStethoscope}
                 showSpeakerColumn
                 onSpeakerClick={handleSpeaker}
-                emptyMessage={t('consultation:queue.noRegistered', 'No registered patients')}
+                emptyMessage={t('consultation:queue.noRegistered')}
               />
             </TabPanel>
             <TabPanel p={0}>

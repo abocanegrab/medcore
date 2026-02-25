@@ -1,11 +1,12 @@
 {
+  "appName": "Centro Medico UPeU",
   "portalAccess": "Acceso al Portal",
   "selectProfile": "Seleccionar Perfil",
   "chooseRole": "Elige tu rol para acceder al flujo clinico",
-  "gatewayVersion": "MedCore PASARELA SEGURA v4.2",
+  "gatewayVersion": "UPeU PASARELA SEGURA v4.2",
   "systemOperational": "Sistema Operativo",
   "restrictedAccess": "Acceso Restringido. Solo Personal Autorizado.",
-  "protectedBy": "Protegido por MedCore Ciber-Infraestructura.",
+  "protectedBy": "Protegido por Centro Medico UPeU.",
   "roleLabels": {
     "recepcion": "Recepcion",
     "triaje": "Enfermera de Triaje",

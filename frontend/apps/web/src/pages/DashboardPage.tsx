@@ -305,7 +305,7 @@ function DoctorDashboard() {
 }
 
 export default function DashboardPage() {
-  const { t } = useTranslation(['dashboard'])
+  const { t } = useTranslation(['dashboard', 'nav'])
   const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { currentUser: authUser } = useAuth()
   const role = authUser?.role ?? 'doctor'
@@ -322,8 +322,8 @@ export default function DashboardPage() {
       <Header
         title={t('dashboard:clinicalOverview')}
         breadcrumbItems={[
-          { label: 'MedCore' },
-          { label: 'Dashboard', isActive: true },
+          { label: t('nav:appName') },
+          { label: t('nav:dashboard'), isActive: true },
         ]}
         onMenuClick={onMenuOpen}
         currentUser={currentUser}

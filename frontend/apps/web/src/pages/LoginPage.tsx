@@ -8,7 +8,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
-import { LuCross } from 'react-icons/lu'
+import { Logo } from '@medcore/ui'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { mockUsers } from '../data/mockUsers'
@@ -119,7 +119,7 @@ function UserCard({ user, index, onClick }: { user: MockUser; index: number; onC
 }
 
 export default function LoginPage() {
-  const { t } = useTranslation(['login'])
+  const { t, i18n } = useTranslation(['login'])
   const navigate = useNavigate()
   const { login } = useAuth()
   const [clock, setClock] = useState('')
@@ -128,8 +128,9 @@ export default function LoginPage() {
   useEffect(() => {
     function updateTime() {
       const now = new Date()
-      setClock(now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }))
-      setDate(now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }))
+      const locale = i18n.language?.startsWith('es') ? 'es-ES' : 'en-US'
+      setClock(now.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', hour12: false }))
+      setDate(now.toLocaleDateString(locale, { weekday: 'long', month: 'short', day: 'numeric' }))
     }
     updateTime()
     const interval = setInterval(updateTime, 1000)
@@ -193,6 +194,30 @@ export default function LoginPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] } as any}
         >
+          {/* Brand logo */}
+          <HStack spacing={4} mb={8}>
+            <Flex
+              w={14}
+              h={14}
+              borderRadius="2xl"
+              bg="primary.500"
+              color="white"
+              align="center"
+              justify="center"
+              shadow="0 4px 14px rgba(0,39,82,0.3)"
+            >
+              <Logo size={36} color="white" />
+            </Flex>
+            <Box>
+              <Text fontFamily="heading" fontWeight="bold" fontSize="lg" letterSpacing="tight" lineHeight="tight" color="primary.500">
+                {t('login:appName')}
+              </Text>
+              <Text fontSize="xs" color="rgba(0,39,82,0.5)" textTransform="uppercase" letterSpacing="widest" fontWeight="medium">
+                {t('login:portalAccess')}
+              </Text>
+            </Box>
+          </HStack>
+
           {/* System operational badge */}
           <HStack
             spacing={3}
@@ -298,30 +323,6 @@ export default function LoginPage() {
 
             {/* Card content */}
             <Box position="relative" zIndex={10}>
-              {/* Brand */}
-              <HStack spacing={3} mb={8}>
-                <Flex
-                  w={10}
-                  h={10}
-                  borderRadius="xl"
-                  bg="primary.500"
-                  color="white"
-                  align="center"
-                  justify="center"
-                  shadow="lg"
-                >
-                  <LuCross size={22} />
-                </Flex>
-                <Box>
-                  <Text fontFamily="heading" fontWeight="bold" fontSize="lg" letterSpacing="tight" lineHeight="none" color="primary.500">
-                    MedCore
-                  </Text>
-                  <Text fontSize="10px" color="rgba(0,39,82,0.6)" textTransform="uppercase" letterSpacing="widest">
-                    {t('login:portalAccess')}
-                  </Text>
-                </Box>
-              </HStack>
-
               {/* Title */}
               <Text
                 fontSize="xl"

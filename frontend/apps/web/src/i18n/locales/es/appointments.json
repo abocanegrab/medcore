@@ -13,13 +13,16 @@
   },
   "form": {
     "patient": "Paciente",
+    "patientPlaceholder": "Nombre del paciente",
     "doctor": "Doctor",
     "date": "Fecha",
     "time": "Hora",
     "service": "Servicio",
     "source": "Fuente",
     "reason": "Motivo",
-    "save": "Guardar Cita"
+    "reasonPlaceholder": "Motivo de la consulta...",
+    "save": "Guardar Cita",
+    "requiredFields": "Complete los campos requeridos"
   },
   "sources": {
     "web": "Web",

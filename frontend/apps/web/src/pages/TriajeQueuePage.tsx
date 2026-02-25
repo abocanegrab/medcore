@@ -8,7 +8,7 @@ import { usePatientQueue } from '../contexts/PatientQueueContext'
 import { useTTS } from '../hooks'
 
 export default function TriajeQueuePage() {
-  const { t } = useTranslation(['triaje', 'common', 'ui'])
+  const { t } = useTranslation(['triaje', 'common', 'ui', 'nav'])
   const navigate = useNavigate()
   const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { getPatientsByStatus, updatePatientStatus } = usePatientQueue()
@@ -44,8 +44,8 @@ export default function TriajeQueuePage() {
       <Header
         title={t('triaje:queue.title')}
         breadcrumbItems={[
-          { label: 'MedCore' },
-          { label: 'Triaje', isActive: true },
+          { label: t('nav:appName') },
+          { label: t('nav:triaje'), isActive: true },
         ]}
         badge={waitingPatients.length > 0 ? { label: `${waitingPatients.length} ${t('ui:waiting')}`, color: 'amber' } : undefined}
         onMenuClick={onMenuOpen}

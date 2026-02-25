@@ -49,7 +49,7 @@ import type {
 import type { CIE10Code } from '../data/catalogs'
 
 export default function ConsultationPage() {
-  const { t } = useTranslation(['consultation', 'common'])
+  const { t } = useTranslation(['consultation', 'common', 'nav'])
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
@@ -265,8 +265,8 @@ export default function ConsultationPage() {
       <Header
         title={t('consultation:form.title')}
         breadcrumbItems={[
-          { label: 'MedCore' },
-          { label: 'Consultas' },
+          { label: t('nav:appName') },
+          { label: t('nav:consultas') },
           { label: patient.name, isActive: true },
         ]}
         badge={{ label: t('consultation:form.dataEntry'), color: 'red' }}

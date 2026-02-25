@@ -14,9 +14,9 @@ import {
   Collapse,
 } from '@chakra-ui/react'
 import {
-  LuCross,
   LuChevronRight,
 } from 'react-icons/lu'
+import { Logo } from '../brand/Logo'
 import type { IconType } from 'react-icons'
 import { useTranslation } from 'react-i18next'
 
@@ -75,7 +75,6 @@ function DesktopSidebar({
   const hoverBg = useColorModeValue('rgba(0,39,82,0.1)', 'rgba(255,255,255,0.05)')
   const navLabelColor = useColorModeValue('gray.600', 'gray.300')
   const navLabelHoverBg = useColorModeValue('gray.50', 'gray.800')
-  const progressBg = useColorModeValue('white', 'gray.700')
   const logoColor = useColorModeValue('primary.500', 'white')
   const sectionLabel = useColorModeValue('gray.400', 'gray.500')
   const subOptionColor = useColorModeValue('gray.500', 'gray.400')
@@ -159,7 +158,7 @@ function DesktopSidebar({
             shadow="glow"
             fontSize="lg"
           >
-            <LuCross size={22} />
+            <Logo size={22} color="white" />
           </Flex>
 
           {/* Nav icons */}
@@ -225,14 +224,14 @@ function DesktopSidebar({
           }}
         >
           <Text
-            fontSize="2xl"
+            fontSize="lg"
             fontFamily="heading"
             fontWeight="bold"
             color={logoColor}
             mb={8}
             letterSpacing="tight"
           >
-            MedCore
+            {t('nav:appName')}
           </Text>
 
           {expandedModule && (
@@ -309,25 +308,6 @@ function DesktopSidebar({
             </Box>
           )}
 
-          {/* System Status */}
-          <Box
-            mt="auto"
-            bg={useColorModeValue('rgba(0,39,82,0.05)', 'rgba(0,39,82,0.15)')}
-            p={4}
-            borderRadius="2xl"
-            border="1px solid"
-            borderColor={useColorModeValue('rgba(0,39,82,0.1)', 'rgba(0,39,82,0.2)')}
-          >
-            <Text fontFamily="heading" fontWeight="bold" color="primary.500" fontSize="sm" mb={1}>
-              {t('nav:systemStatus')}
-            </Text>
-            <Text fontSize="xs" color="gray.500" mb={3}>
-              {t('nav:serverOptimal')}
-            </Text>
-            <Box h="6px" w="full" bg={progressBg} borderRadius="full" overflow="hidden">
-              <Box h="full" bg="primary.500" w="75%" borderRadius="full" />
-            </Box>
-          </Box>
         </Box>
       </Box>
     </>
@@ -375,8 +355,8 @@ function MobileSidebar({
       <DrawerOverlay />
       <DrawerContent maxW="280px" bg={bg}>
         <DrawerBody p={0} py={8} px={6}>
-          <Text fontSize="2xl" fontFamily="heading" fontWeight="bold" color="primary.500" mb={8}>
-            MedCore
+          <Text fontSize="lg" fontFamily="heading" fontWeight="bold" color="primary.500" mb={8}>
+            {t('nav:appName')}
           </Text>
           <VStack spacing={1} align="stretch">
             {modules.map((mod) => {

@@ -1,11 +1,12 @@
 {
+  "appName": "Centro Medico UPeU",
   "portalAccess": "Portal Access",
   "selectProfile": "Select Profile",
   "chooseRole": "Choose your role to access the clinical workflow",
-  "gatewayVersion": "MedCore SECURE GATEWAY v4.2",
+  "gatewayVersion": "UPeU SECURE GATEWAY v4.2",
   "systemOperational": "System Operational",
   "restrictedAccess": "Restricted Access. Authorized Personnel Only.",
-  "protectedBy": "Protected by MedCore Cyber-Infrastructure.",
+  "protectedBy": "Protected by Centro Medico UPeU.",
   "roleLabels": {
     "recepcion": "Reception",
     "triaje": "Triage Nurse",

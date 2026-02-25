@@ -13,13 +13,16 @@
   },
   "form": {
     "patient": "Patient",
+    "patientPlaceholder": "Patient name",
     "doctor": "Doctor",
     "date": "Date",
     "time": "Time",
     "service": "Service",
     "source": "Source",
     "reason": "Reason",
-    "save": "Save Appointment"
+    "reasonPlaceholder": "Reason for consultation...",
+    "save": "Save Appointment",
+    "requiredFields": "Please fill in required fields"
   },
   "sources": {
     "web": "Web",

@@ -49,7 +49,7 @@ const statusColors: Record<AppointmentStatus, string> = {
 }
 
 export default function AppointmentsPage() {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['appointments', 'common', 'nav'])
   const { onMenuOpen, currentUser, onLogout } = useOutletContext<{ onMenuOpen: () => void; currentUser?: any; onLogout?: () => void }>()
   const { appointments, addAppointment, updateAppointment, cancelAppointment, getAppointmentsByDate } = useAppointments()
   const toast = useToast()
@@ -93,7 +93,7 @@ export default function AppointmentsPage() {
 
   const handleCreateAppointment = () => {
     if (!formPatientName || !formReason) {
-      toast({ title: 'Complete los campos requeridos', status: 'warning', duration: 2000 })
+      toast({ title: t('appointments:form.requiredFields'), status: 'warning', duration: 2000 })
       return
     }
 
@@ -113,7 +113,7 @@ export default function AppointmentsPage() {
     }
 
     addAppointment(newAppt)
-    toast({ title: 'Cita creada exitosamente', status: 'success', duration: 2000 })
+    toast({ title: t('appointments:created'), status: 'success', duration: 2000 })
     setFormPatientName('')
     setFormReason('')
   }
@@ -129,10 +129,10 @@ export default function AppointmentsPage() {
   return (
     <Box>
       <Header
-        title="Citas"
+        title={t('appointments:title')}
         breadcrumbItems={[
-          { label: 'MedCore' },
-          { label: 'Citas', isActive: true },
+          { label: t('nav:appName') },
+          { label: t('nav:citas'), isActive: true },
         ]}
         onMenuClick={onMenuOpen}
         currentUser={currentUser}
@@ -158,7 +158,7 @@ export default function AppointmentsPage() {
                     <LuCalendar size={20} />
                   </Flex>
                   <Text fontSize="lg" fontWeight="bold" color={titleColor}>
-                    Agenda Semanal
+                    {t('appointments:weeklySchedule')}
                   </Text>
                 </HStack>
                 <HStack spacing={2}>
@@ -171,7 +171,7 @@ export default function AppointmentsPage() {
                     onClick={() => setWeekOffset((w) => w - 1)}
                   />
                   <Button size="sm" variant="ghost" borderRadius="lg" onClick={() => setWeekOffset(0)}>
-                    Hoy
+                    {t('appointments:today')}
                   </Button>
                   <IconButton
                     aria-label="Next week"
@@ -284,24 +284,24 @@ export default function AppointmentsPage() {
                   <LuPlus size={20} />
                 </Flex>
                 <Text fontSize="lg" fontWeight="bold" color={titleColor}>
-                  Nueva Cita
+                  {t('appointments:newAppointment')}
                 </Text>
               </HStack>
 
               <VStack spacing={4}>
                 <FormControl isRequired>
-                  <FormLabel fontSize="sm">Paciente</FormLabel>
+                  <FormLabel fontSize="sm">{t('appointments:form.patient')}</FormLabel>
                   <Input
                     value={formPatientName}
                     onChange={(e) => setFormPatientName(e.target.value)}
-                    placeholder="Nombre del paciente"
+                    placeholder={t('appointments:form.patientPlaceholder')}
                     borderRadius="xl"
                     size="sm"
                   />
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel fontSize="sm">Doctor</FormLabel>
+                  <FormLabel fontSize="sm">{t('appointments:form.doctor')}</FormLabel>
                   <Select value={formDoctor} onChange={(e) => setFormDoctor(e.target.value)} borderRadius="xl" size="sm">
                     {DOCTORS.map((d) => (
                       <option key={d.id} value={d.id}>{d.name}</option>
@@ -311,7 +311,7 @@ export default function AppointmentsPage() {
 
                 <HStack spacing={3} w="full">
                   <FormControl>
-                    <FormLabel fontSize="sm">Fecha</FormLabel>
+                    <FormLabel fontSize="sm">{t('appointments:form.date')}</FormLabel>
                     <Input
                       type="date"
                       value={formDate}
@@ -321,7 +321,7 @@ export default function AppointmentsPage() {
                     />
                   </FormControl>
                   <FormControl>
-                    <FormLabel fontSize="sm">Hora</FormLabel>
+                    <FormLabel fontSize="sm">{t('appointments:form.time')}</FormLabel>
                     <Select value={formTime} onChange={(e) => setFormTime(e.target.value)} borderRadius="xl" size="sm">
                       {TIME_SLOTS.map((s) => (
                         <option key={s} value={s}>{s}</option>
@@ -331,7 +331,7 @@ export default function AppointmentsPage() {
                 </HStack>
 
                 <FormControl>
-                  <FormLabel fontSize="sm">Servicio</FormLabel>
+                  <FormLabel fontSize="sm">{t('appointments:form.service')}</FormLabel>
                   <Select value={formService} onChange={(e) => setFormService(e.target.value)} borderRadius="xl" size="sm">
                     <option>Medicina General</option>
                     <option>Medicina Interna</option>
@@ -343,21 +343,21 @@ export default function AppointmentsPage() {
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel fontSize="sm">Fuente</FormLabel>
+                  <FormLabel fontSize="sm">{t('appointments:form.source')}</FormLabel>
                   <Select value={formSource} onChange={(e) => setFormSource(e.target.value as AppointmentSource)} borderRadius="xl" size="sm">
-                    <option value="web">Web</option>
-                    <option value="phone">Telefono</option>
-                    <option value="whatsapp">WhatsApp</option>
-                    <option value="callcenter">Call Center</option>
+                    <option value="web">{t('appointments:sources.web')}</option>
+                    <option value="phone">{t('appointments:sources.phone')}</option>
+                    <option value="whatsapp">{t('appointments:sources.whatsapp')}</option>
+                    <option value="callcenter">{t('appointments:sources.callcenter')}</option>
                   </Select>
                 </FormControl>
 
                 <FormControl isRequired>
-                  <FormLabel fontSize="sm">Motivo</FormLabel>
+                  <FormLabel fontSize="sm">{t('appointments:form.reason')}</FormLabel>
                   <Textarea
                     value={formReason}
                     onChange={(e) => setFormReason(e.target.value)}
-                    placeholder="Motivo de la consulta..."
+                    placeholder={t('appointments:form.reasonPlaceholder')}
                     borderRadius="xl"
                     size="sm"
                     rows={3}
@@ -375,7 +375,7 @@ export default function AppointmentsPage() {
                   size="sm"
                   fontWeight="semibold"
                 >
-                  Guardar Cita
+                  {t('appointments:form.save')}
                 </Button>
               </VStack>
             </Box>
