@@ -40,6 +40,33 @@
     "lastVisit": "Last Visit",
     "condition": "Condition",
     "todaysSchedule": "Today's Schedule",
-    "liveActivity": "Live Activity"
+    "liveActivity": "Live Activity",
+    "stats": {
+      "attritionRate": "Attrition Rate",
+      "monthlyTarget": "Monthly Target",
+      "missedAppointments": "Missed Appointments",
+      "acceptableLimit": "Acceptable Limit",
+      "digitalAdoption": "Digital Adoption",
+      "quarterlyTarget": "Quarterly Target",
+      "npsScore": "NPS Score",
+      "industryAvg": "Industry Avg"
+    },
+    "followUpConsultation": "Follow-up Consultation",
+    "conditions": {
+      "hypertension": "Hypertension"
+    },
+    "reasons": {
+      "generalCheckup": "General Checkup",
+      "consultation": "Consultation",
+      "cardiology": "Cardiology"
+    },
+    "activity": {
+      "updatedVitals": "updated vitals for Room 302.",
+      "labResultsReady": "Lab results ready for",
+      "newBooking": "New booking:",
+      "10minsAgo": "10 mins ago",
+      "45minsAgo": "45 mins ago",
+      "2hoursAgo": "2 hours ago"
+    }
   }
 }

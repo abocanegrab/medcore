@@ -1,10 +1,14 @@
 import { Box, Text, Flex, useColorModeValue } from '@chakra-ui/react'
 import { LuCalendar } from 'react-icons/lu'
 
-export function DateWidget() {
+interface DateWidgetProps {
+  locale?: string
+}
+
+export function DateWidget({ locale = 'en-US' }: DateWidgetProps) {
   const now = new Date()
-  const weekday = now.toLocaleDateString('en-US', { weekday: 'long' })
-  const fullDate = now.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+  const weekday = now.toLocaleDateString(locale, { weekday: 'long' })
+  const fullDate = now.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' })
   const bg = useColorModeValue('white', 'card.dark')
   const border = useColorModeValue('gray.100', 'gray.800')
   const titleColor = useColorModeValue('primary.500', 'white')

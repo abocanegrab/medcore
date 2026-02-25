@@ -40,6 +40,33 @@
     "lastVisit": "Ultima Visita",
     "condition": "Condicion",
     "todaysSchedule": "Agenda de Hoy",
-    "liveActivity": "Actividad en Vivo"
+    "liveActivity": "Actividad en Vivo",
+    "stats": {
+      "attritionRate": "Tasa de Desercion",
+      "monthlyTarget": "Meta Mensual",
+      "missedAppointments": "Citas Perdidas",
+      "acceptableLimit": "Limite Aceptable",
+      "digitalAdoption": "Adopcion Digital",
+      "quarterlyTarget": "Meta Trimestral",
+      "npsScore": "Puntaje NPS",
+      "industryAvg": "Prom. Industria"
+    },
+    "followUpConsultation": "Consulta de Seguimiento",
+    "conditions": {
+      "hypertension": "Hipertension"
+    },
+    "reasons": {
+      "generalCheckup": "Chequeo General",
+      "consultation": "Consulta",
+      "cardiology": "Cardiologia"
+    },
+    "activity": {
+      "updatedVitals": "actualizo signos vitales de la Sala 302.",
+      "labResultsReady": "Resultados de lab listos para",
+      "newBooking": "Nueva cita:",
+      "10minsAgo": "hace 10 min",
+      "45minsAgo": "hace 45 min",
+      "2hoursAgo": "hace 2 horas"
+    }
   }
 }

@@ -180,8 +180,9 @@ function FarmaciaDashboard() {
 }
 
 function DoctorDashboard() {
-  const { t } = useTranslation(['dashboard'])
+  const { t, i18n } = useTranslation(['dashboard'])
   const navigate = useNavigate()
+  const locale = i18n.language?.startsWith('es') ? 'es-ES' : 'en-US'
 
   return (
     <>
@@ -215,7 +216,7 @@ function DoctorDashboard() {
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>
           {stats.map((stat, i) => (
-            <StatCard key={stat.label} {...stat} index={i} />
+            <StatCard key={stat.label} {...stat} label={t(stat.label)} target={{ ...stat.target, label: t(stat.target.label) }} index={i} />
           ))}
         </SimpleGrid>
       </Box>
@@ -249,7 +250,7 @@ function DoctorDashboard() {
                   {t('dashboard:doctor.nextUp')} &bull; {nextAppointment.time}
                 </Text>
                 <Text fontSize={{ base: 'xl', md: '2xl' }} fontFamily="heading" fontWeight="bold" mb={1}>{nextAppointment.patientName}</Text>
-                <Text color="gray.300" fontWeight="light">{nextAppointment.consultationType}</Text>
+                <Text color="gray.300" fontWeight="light">{t(nextAppointment.consultationType)}</Text>
               </Box>
               <Flex w={16} h={16} borderRadius="2xl" bg="whiteAlpha.100" backdropFilter="blur(12px)" align="center" justify="center" border="1px solid" borderColor="whiteAlpha.200" flexShrink={0} display={{ base: 'none', sm: 'flex' }}>
                 <LuVideo size={28} />
@@ -263,7 +264,7 @@ function DoctorDashboard() {
               </Box>
               <Box bg="rgba(26,61,102,0.5)" borderRadius="xl" p={3} backdropFilter="blur(4px)" border="1px solid" borderColor="whiteAlpha.50">
                 <Text fontSize="xs" color="gray.300" mb={1}>{t('dashboard:doctor.condition')}</Text>
-                <Text fontWeight="semibold">{nextAppointment.condition}</Text>
+                <Text fontWeight="semibold">{t(nextAppointment.condition)}</Text>
               </Box>
             </SimpleGrid>
 
@@ -280,12 +281,12 @@ function DoctorDashboard() {
             </Button>
           </Box>
 
-          <ScheduleTable title="Today's Schedule" rows={todaySchedule} onRowClick={(id) => navigate(`/consultation/${id}`)} />
+          <ScheduleTable title={t('dashboard:doctor.todaysSchedule')} rows={todaySchedule.map(s => ({ ...s, reason: t(s.reason) }))} onRowClick={(id) => navigate(`/consultation/${id}`)} />
         </GridItem>
 
         <GridItem colSpan={{ base: 1, xl: 4 }} display="flex" flexDir="column" gap={4}>
-          <DateWidget />
-          <ActivityTimeline title="Live Activity" items={activityItems} />
+          <DateWidget locale={locale} />
+          <ActivityTimeline title={t('dashboard:doctor.liveActivity')} items={activityItems.map(a => ({ ...a, text: t(a.text), time: t(a.time) }))} />
           <SimpleGrid columns={2} spacing={3}>
             <Box bg={useColorModeValue('primary.500', 'gray.800')} borderRadius="2xl" p={4} color="white" shadow="lg">
               <Box mb={2}><LuUser size={20} color="rgba(255,255,255,0.7)" /></Box>
